@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.krector.wifip2p.Heartbeat"
+    tools:layout_editor_absoluteY="89dp"
+    tools:layout_editor_absoluteX="0dp">
+
+    <!--<Button
+        android:id="@+id/heartbeat4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="4"
+        tools:layout_editor_absoluteY="79dp"
+        tools:layout_editor_absoluteX="193dp"
+        android:layout_above="@+id/heartbeat3"
+        android:layout_alignLeft="@+id/heartbeat3"
+        android:layout_alignStart="@+id/heartbeat3"
+        android:layout_marginLeft="36dp"
+        android:layout_marginStart="36dp" />-->
+
+    <!--<Button
+        android:id="@+id/heartbeat2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2"
+        tools:layout_editor_absoluteY="175dp"
+        tools:layout_editor_absoluteX="105dp"
+        android:layout_below="@+id/heartbeat3"
+        android:layout_toLeftOf="@+id/heartbeat5"
+        android:layout_toStartOf="@+id/heartbeat5"
+        android:layout_marginRight="28dp"
+        android:layout_marginEnd="28dp" />-->
+
+    <!--<Button
+        android:id="@+id/heartbeat6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="6"
+        android:layout_below="@+id/heartbeat5"
+        android:layout_toRightOf="@+id/heartbeat4"
+        android:layout_toEndOf="@+id/heartbeat4"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp" />-->
+
+    <!--<Button
+        android:id="@+id/heartbeat8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="8"
+        tools:layout_editor_absoluteY="175dp"
+        tools:layout_editor_absoluteX="392dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginStart="40dp"
+        android:layout_below="@+id/heartbeat7"
+        android:layout_alignLeft="@+id/heartbeat7"
+        android:layout_alignStart="@+id/heartbeat7" />-->
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Heartbeats"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/heartbeatstart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="start"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="@+id/heartbeat3"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="42dp"
+        app:layout_constraintLeft_toLeftOf="@+id/heartbeat3" />
+
+    <Button
+        android:id="@+id/heartbeat1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        android:layout_marginStart="38dp"
+        app:layout_constraintBottom_toBottomOf="@+id/heartbeat9"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/heartbeat9"
+        android:layout_marginLeft="38dp" />
+
+    <Button
+        android:id="@+id/heartbeat9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="9"
+        android:layout_marginEnd="45dp"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="186dp"
+        android:layout_marginRight="45dp" />
+
+    <Button
+        android:id="@+id/heartbeat7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="7"
+        android:layout_marginStart="60dp"
+        tools:layout_constraintTop_creator="1"
+        android:layout_marginTop="44dp"
+        app:layout_constraintTop_toBottomOf="@+id/heartbeat5"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toRightOf="@+id/heartbeat5"
+        android:layout_marginLeft="60dp" />
+
+    <Button
+        android:id="@+id/heartbeat3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3"
+        android:layout_marginStart="116dp"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="@+id/heartbeat1"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="126dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="116dp" />
+
+    <Button
+        android:id="@+id/heartbeat5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="5"
+        android:layout_marginStart="52dp"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="@+id/heartbeat3"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="44dp"
+        app:layout_constraintLeft_toRightOf="@+id/heartbeat3"
+        android:layout_marginLeft="52dp" />
+
+    <Button
+        android:id="@+id/heartbeatstop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="123dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="42dp"
+        android:layout_marginRight="123dp" />
+</android.support.constraint.ConstraintLayout>
