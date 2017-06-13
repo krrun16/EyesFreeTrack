@@ -8,6 +8,7 @@ import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
 
 import java.io.IOException;
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
@@ -20,11 +21,16 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private SurfaceHolder mHolder;
     private Camera mCamera;
     private Context context;
+    private List<Camera.Size> mSupportedPreviewSizes;
+    private Camera.Size mPreviewSize;
+    private SurfaceView mSurfaceView;
+
 
     public CameraPreview(Context context, Camera camera) {
         super(context);
         this.context = context;
         mCamera = camera;
+        mSupportedPreviewSizes = mCamera.getParameters().getSupportedPreviewSizes();
 
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
@@ -36,16 +42,25 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     public void surfaceCreated(SurfaceHolder holder) {
         // The Surface has been created, now tell the camera where to draw the preview.
-        try {
-            mCamera.setPreviewDisplay(holder);
+        if (mCamera != null) {
+            Camera.Parameters params = mCamera.getParameters();
+            mCamera.setParameters(params);
+            try {
+                mCamera.setPreviewDisplay(holder);
+            } catch (IOException e) {
+                Log.d(TAG, "Error setting camera preview: " + e.getMessage());
+            }
             mCamera.startPreview();
-        } catch (IOException e) {
-            Log.d(TAG, "Error setting camera preview: " + e.getMessage());
         }
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
         // empty. Take care of releasing the Camera preview in your activity.
+    }
+
+    public Camera.Size getPreviewSize()
+    {
+        return mPreviewSize;
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
@@ -69,6 +84,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         // start preview with new settings
         try {
+            Camera.Parameters params = mCamera.getParameters();
+            Camera.Size previewSize = getPreviewSize();
+            params.setPreviewSize(previewSize.width, previewSize.height);
+            mCamera.setParameters(params);
+
             mCamera.setPreviewCallback((PreviewCallback) context);
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
@@ -77,4 +97,44 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             Log.d(TAG, "Error starting camera preview: " + e.getMessage());
         }
     }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+    {
+        final int width = resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec);
+        final int height = resolveSize(getSuggestedMinimumHeight(), heightMeasureSpec);
+        setMeasuredDimension(width, height);
+
+        if (mSupportedPreviewSizes != null)
+        {
+            mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, width, height);
+        }
+    }
+    private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int width, int height)
+    {
+        Camera.Size optimalSize = null;
+
+        final double ASPECT_TOLERANCE = 0.1;
+        double targetRatio = (double) height / width;
+
+        // Try to find a size match which suits the whole screen minus the menu on the left.
+        for (Camera.Size size : sizes)
+        {
+            if (size.height != width) continue;
+            double ratio = (double) size.width / size.height;
+            if (ratio <= targetRatio + ASPECT_TOLERANCE && ratio >= targetRatio - ASPECT_TOLERANCE)
+            {
+                optimalSize = size;
+            }
+        }
+
+        // If we cannot find the one that matches the aspect ratio, ignore the requirement.
+        if (optimalSize == null)
+        {
+            // TODO : Backup in case we don't get a size.
+        }
+
+        return optimalSize;
+    }
 }
+

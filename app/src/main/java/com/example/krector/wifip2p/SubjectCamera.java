@@ -12,12 +12,15 @@ import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Surface;
+import android.view.SurfaceHolder;
 import android.widget.FrameLayout;
 import android.widget.VideoView;
 
@@ -34,6 +37,7 @@ import static android.content.ContentValues.TAG;
 
 public class SubjectCamera extends AppCompatActivity implements Camera.PreviewCallback {
     protected static final int MY_PERMISSIONS_REQUEST_CAMERA = 23;
+    protected static final int MY_PERMISSIONS_REQUEST_AUDIO = 29;
     protected static final int MY_PERMISSION_WRITE_EXTERNAL_STORAGE = 16;
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
@@ -54,17 +58,35 @@ public class SubjectCamera extends AppCompatActivity implements Camera.PreviewCa
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_subject_camera);
-        ActivityCompat.requestPermissions(SubjectCamera.this, new String[]
+        ActivityCompat.requestPermissions(this, new String[]
                         {Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 MY_PERMISSION_WRITE_EXTERNAL_STORAGE);
-
+        ActivityCompat.requestPermissions(SubjectCamera.this,
+                new String[]{Manifest.permission.RECORD_AUDIO},
+                MY_PERMISSIONS_REQUEST_AUDIO);
+        getCameraPermission();
         mCamera = getCameraInstance();
-        mPreview = new CameraPreview(SubjectCamera.this, mCamera);
+        mPreview = new CameraPreview(this, mCamera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
-
-
-        //start recording video
+    }
+    @Override
+    protected void onStart(){
+        super.onStart();
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable(){
+            @Override
+            public void run() {
+                prepareVideoRecorder();
+                try {
+                    mMediaRecorder.start();
+                }catch (RuntimeException e){
+                    e.printStackTrace();
+                }
+                isRecording = true;
+            }
+        },100);
+//        prepareVideoRecorder();
 
     }
     @Override
@@ -90,6 +112,20 @@ public class SubjectCamera extends AppCompatActivity implements Camera.PreviewCa
             // other 'case' lines to check for other
             // permissions this app might request
             case MY_PERMISSION_WRITE_EXTERNAL_STORAGE: {
+//                writeToFile("hello world!");
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            case MY_PERMISSIONS_REQUEST_AUDIO: {
 //                writeToFile("hello world!");
             }
         }
@@ -208,15 +244,21 @@ public class SubjectCamera extends AppCompatActivity implements Camera.PreviewCa
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
         // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
-        mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
+        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H263);
+//        mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
 
         // Step 4: Set output file
         mMediaRecorder.setOutputFile(getOutputMediaFile(MEDIA_TYPE_VIDEO).toString());
 
+        mMediaRecorder.setVideoFrameRate(20);
+
         // Step 5: Set the preview output
         mMediaRecorder.setPreviewDisplay(mPreview.getHolder().getSurface());
-
+        mMediaRecorder.setOrientationHint(90);
         // Step 6: Prepare configured MediaRecorder
+        SurfaceHolder temp = mPreview.getHolder();
         try {
             mMediaRecorder.prepare();
         } catch (IllegalStateException e) {
@@ -232,10 +274,19 @@ public class SubjectCamera extends AppCompatActivity implements Camera.PreviewCa
     }
     private void releaseMediaRecorder(){
         if (mMediaRecorder != null) {
+            mMediaRecorder.stop();
             mMediaRecorder.reset();   // clear recorder configuration
             mMediaRecorder.release(); // release the recorder object
             mMediaRecorder = null;
             mCamera.lock();           // lock camera for later use
+        }
+    }
+    public static void endRecording(){
+        if(mMediaRecorder != null){
+            mMediaRecorder.stop();
+            mMediaRecorder.reset();
+            mMediaRecorder.release();
+            mCamera.lock();
         }
     }
     public void onPreviewFrame(byte[] data, Camera camera) {
