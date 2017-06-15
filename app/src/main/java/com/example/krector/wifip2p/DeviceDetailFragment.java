@@ -75,7 +75,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     protected static final int MY_PERMISSION_WRITE_EXTERNAL_STORAGE = 16;
     protected static final int MY_PERMISSIONS_REQUEST_CAMERA = 23;
 
-    static Context baseContext;
+    private Context baseContext;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -276,7 +276,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         private TextView statusText;
         private Context context;
         private MediaPlayer mp;
-
+        private boolean cameraStarted;
         /**
          * @param statusText
          */
@@ -284,6 +284,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
             this.statusText = (TextView) statusText;
             this.context = context;
             this.mp = mp;
+            this.cameraStarted = false;
         }
 
         @Override
@@ -404,13 +405,20 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     break;
 
                 case "stop":
-                    playMedia(R.raw.stop);
+                    if(SubjectCamera.isRecording) {
+                        playMedia(R.raw.stop);
+                        SubjectCamera.endRecording();
+                        this.cameraStarted = false;
+                    }
                     break;
 
                 case "start":
-                    playMedia(R.raw.start);
-                    Intent intent = new Intent((Activity)context, SubjectCamera.class);
-                    ((Activity)context).startActivityForResult(intent, 1);
+                    if(!SubjectCamera.isRecording) {
+                        playMedia(R.raw.start);
+                        Intent intent = new Intent((Activity) context, SubjectCamera.class);
+                        ((Activity) context).startActivityForResult(intent, 1);
+                        this.cameraStarted = true;
+                    }
                     break;
             }
             new FileServerAsyncTask(context, statusText, mp).execute();

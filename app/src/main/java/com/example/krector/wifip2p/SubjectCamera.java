@@ -1,6 +1,7 @@
 package com.example.krector.wifip2p;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -51,11 +52,13 @@ public class SubjectCamera extends AppCompatActivity implements Camera.PreviewCa
     protected static String ts = tsLong.toString();
     protected static File file = new File(dir, ts + "_study.txt");
     private static MediaRecorder mMediaRecorder;
-    private static boolean isRecording;
+    static boolean isRecording;
+    private static AppCompatActivity cameraActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        cameraActivity = this;
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_subject_camera);
         ActivityCompat.requestPermissions(this, new String[]
@@ -89,6 +92,7 @@ public class SubjectCamera extends AppCompatActivity implements Camera.PreviewCa
 //        prepareVideoRecorder();
 
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -194,16 +198,11 @@ public class SubjectCamera extends AppCompatActivity implements Camera.PreviewCa
         }
     }
 
-    //VIDEO METHODS
-    private static Uri getOutputMediaFileUri(int type){
-        return Uri.fromFile(getOutputMediaFile(type));
-    }
     private static File getOutputMediaFile(int type){
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
 
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "MyCameraApp");
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "EyesFreeTrack");
         // This location works best if you want the created images to be shared
         // between applications and persist after your app has been uninstalled.
 
@@ -288,6 +287,8 @@ public class SubjectCamera extends AppCompatActivity implements Camera.PreviewCa
             mMediaRecorder.release();
             mCamera.lock();
         }
+        isRecording = false;
+        cameraActivity.finish();
     }
     public void onPreviewFrame(byte[] data, Camera camera) {
 
