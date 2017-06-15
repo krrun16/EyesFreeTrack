@@ -68,14 +68,11 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     private WifiP2pDevice device;
     private WifiP2pInfo info;
     ProgressDialog progressDialog = null;
-    protected static final File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-    protected static Long tsLong = System.currentTimeMillis()/1000;
-    protected static String ts = tsLong.toString();
-    protected static File file = new File(dir, ts + "_study.txt");
-    protected static final int MY_PERMISSION_WRITE_EXTERNAL_STORAGE = 16;
-    protected static final int MY_PERMISSIONS_REQUEST_CAMERA = 23;
+    protected static FileOutputStream fileStream;
 
-    private Context baseContext;
+    protected static final int MY_PERMISSION_WRITE_EXTERNAL_STORAGE = 16;
+
+    private static Context baseContext;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -93,26 +90,26 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         }
     }
 
-    protected void writeToFile(String text) {
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED) {
-
-            String test = "hello world!";
-            FileOutputStream fos = null;
-            try {
-                fos = new FileOutputStream(file);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                fos.write(test.getBytes());
-                fos.close();
-            } catch (IOException e) {
+    protected static void writeToFile(String text) {
+        if(text.equals("start")){
+            fileStream  = getOutputLogFileStream();
+        }
+        try {
+            Long tsLong = System.currentTimeMillis() / 1000;
+            String ts = tsLong.toString();
+            fileStream.write((ts+"_"+text+'\n').getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(text.equals("stop")){
+            try{
+                fileStream.close();
+                fileStream = null;
+            }catch (IOException e){
                 e.printStackTrace();
             }
         }
+
     }
 
     @Override
@@ -330,6 +327,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         @Override
         protected void onPostExecute(String result) {
             statusText.setText("String copied - " + result);
+            writeToFile(result);
             switch(result){
 
                 case "voice1":
@@ -348,9 +346,9 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                 //    playMedia(R.raw.vfour);
                 //    break;
 
-                //case "voice5":
-                //    playMedia(R.raw.vfive);
-                //    break;
+//                case "voice5":
+//                    playMedia(R.raw.vfive);
+//                    break;
 
                 //case "voice6":
                 //    playMedia(R.raw.vsix);
@@ -441,7 +439,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         try {
             while ((len = inputStream.read(buf)) != -1) {
                 out.write(buf, 0, len);
-
             }
             out.close();
             inputStream.close();
@@ -452,4 +449,43 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         return true;
     }
 
+    private static FileOutputStream getOutputLogFileStream() {
+        if (ContextCompat.checkSelfPermission(baseContext,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            // To be safe, you should check that the SDCard is mounted
+            // using Environment.getExternalStorageState() before doing this.
+
+            File logStorageDir = new File(Environment.getExternalStorageDirectory(), "EyesFreeTrack");
+            // This location works best if you want the created images to be shared
+            // between applications and persist after your app has been uninstalled.
+
+            // Create the storage directory if it does not exist
+            if (!logStorageDir.exists()) {
+                if (!logStorageDir.mkdirs()) {
+                    Log.d("EyesFreeTrack", "failed to create directory");
+                    return null;
+                }
+            }
+
+            // Create a media file name
+            Long tsLong = System.currentTimeMillis() / 1000;
+            String ts = tsLong.toString();
+            File logFile = new File(logStorageDir.getPath() + File.separator +
+                    "LOG_" + ts + ".txt");
+
+
+            FileOutputStream logStream = null;
+            try {
+                logStream = new FileOutputStream(logFile);
+                logStream.write("Log File Initialized\n".getBytes());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+            return logStream;
+        }
+        return null;
+    }
 }

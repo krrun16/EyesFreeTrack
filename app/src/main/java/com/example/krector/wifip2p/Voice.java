@@ -33,7 +33,7 @@ public class Voice extends AppCompatActivity implements OnClickListener {
         //Button voiceButton2 = (Button) findViewById(R.id.voice2);
         Button voiceButton3 = (Button) findViewById(R.id.voice3);
         //Button voiceButton4 = (Button) findViewById(R.id.voice4);
-        Button voiceButton5 = (Button) findViewById(R.id.voice5);
+//        Button voiceButton5 = (Button) findViewById(R.id.voice5);
         //Button voiceButton6 = (Button) findViewById(R.id.voice6);
         Button voiceButton7 = (Button) findViewById(R.id.voice7);
         //Button voiceButton8 = (Button) findViewById(R.id.voice8);
@@ -45,7 +45,7 @@ public class Voice extends AppCompatActivity implements OnClickListener {
         //voiceButton2.setOnClickListener(this);
         voiceButton3.setOnClickListener(this);
         //voiceButton4.setOnClickListener(this);
-        voiceButton5.setOnClickListener(this);
+//        voiceButton5.setOnClickListener(this);
         //voiceButton6.setOnClickListener(this);
         voiceButton7.setOnClickListener(this);
         //voiceButton8.setOnClickListener(this);
@@ -53,27 +53,6 @@ public class Voice extends AppCompatActivity implements OnClickListener {
         stopButton.setOnClickListener(this);
         voicestartbutton.setOnClickListener(this);
 
-    }
-
-    protected void writeToFile(String text) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED) {
-
-            FileOutputStream fos = null;
-            try {
-                fos = new FileOutputStream(DeviceDetailFragment.file, true);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                text = text + "\n";
-                fos.write(text.getBytes());
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void sendTextMessage(String message) {
@@ -109,9 +88,10 @@ public class Voice extends AppCompatActivity implements OnClickListener {
             //    sendTextMessage("voice6");
             //    break;
 
-            case R.id.voice5:
-                writeToFile(System.currentTimeMillis() + ":" + "parallel");
-                break;
+//            case R.id.voice5:
+////                writeToFile(System.currentTimeMillis() + ":" + "parallel");
+//                sendTextMessage("voice5");
+//                break;
 
             //case R.id.voice6:
             //    sendTextMessage("voice4");

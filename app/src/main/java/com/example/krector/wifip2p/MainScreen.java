@@ -47,24 +47,4 @@ public class MainScreen extends AppCompatActivity {
         startActivity(hapticButton);
     }
 
-    protected void writeToFile(String text) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED) {
-
-            FileOutputStream fos = null;
-            try {
-                fos = new FileOutputStream(DeviceDetailFragment.file, true);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                text = text + "\n";
-                fos.write(text.getBytes());
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }

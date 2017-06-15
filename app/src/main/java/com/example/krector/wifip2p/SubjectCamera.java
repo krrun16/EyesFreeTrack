@@ -40,8 +40,6 @@ public class SubjectCamera extends AppCompatActivity implements Camera.PreviewCa
     protected static final int MY_PERMISSIONS_REQUEST_CAMERA = 23;
     protected static final int MY_PERMISSIONS_REQUEST_AUDIO = 29;
     protected static final int MY_PERMISSION_WRITE_EXTERNAL_STORAGE = 16;
-    public static final int MEDIA_TYPE_IMAGE = 1;
-    public static final int MEDIA_TYPE_VIDEO = 2;
 
     private static final String VIDEO_DIRECTORY_NAME = "subject_videos";
 
@@ -176,29 +174,7 @@ public class SubjectCamera extends AppCompatActivity implements Camera.PreviewCa
         return c; // returns null if camera is unavailable
     }
 
-    protected void writeToFile(String text) {
-        if (ContextCompat.checkSelfPermission(SubjectCamera.this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED) {
-
-            String test = "hello world!";
-            FileOutputStream fos = null;
-            try {
-                fos = new FileOutputStream(file);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                fos.write(test.getBytes());
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private static File getOutputMediaFile(int type){
+    private static File getOutputMediaFile(){
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
 
@@ -209,24 +185,16 @@ public class SubjectCamera extends AppCompatActivity implements Camera.PreviewCa
         // Create the storage directory if it does not exist
         if (! mediaStorageDir.exists()){
             if (! mediaStorageDir.mkdirs()){
-                Log.d("MyCameraApp", "failed to create directory");
+                Log.d("EyesFreeTrack", "failed to create directory");
                 return null;
             }
         }
 
         // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File mediaFile;
-        if (type == MEDIA_TYPE_IMAGE){
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "IMG_"+ timeStamp + ".jpg");
-        } else if(type == MEDIA_TYPE_VIDEO) {
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "VID_"+ timeStamp + ".mp4");
-        } else {
-            return null;
-        }
-
+        Long tsLong = System.currentTimeMillis() / 1000;
+        String ts = tsLong.toString();
+        File mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "VID_"+ ts + ".mp4");
         return mediaFile;
     }
     private boolean prepareVideoRecorder(){
@@ -249,7 +217,7 @@ public class SubjectCamera extends AppCompatActivity implements Camera.PreviewCa
 //        mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
 
         // Step 4: Set output file
-        mMediaRecorder.setOutputFile(getOutputMediaFile(MEDIA_TYPE_VIDEO).toString());
+        mMediaRecorder.setOutputFile(getOutputMediaFile().toString());
 
         mMediaRecorder.setVideoFrameRate(20);
 

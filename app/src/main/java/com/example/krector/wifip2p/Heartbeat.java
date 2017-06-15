@@ -33,7 +33,7 @@ public class Heartbeat extends AppCompatActivity implements OnClickListener {
         //Button heartbeatButton2 = (Button) findViewById(R.id.heartbeat2);
         Button heartbeatButton3 = (Button) findViewById(R.id.heartbeat3);
         //Button heartbeatButton4 = (Button) findViewById(R.id.heartbeat4);
-        Button heartbeatButton5 = (Button) findViewById(R.id.heartbeat5);
+//        Button heartbeatButton5 = (Button) findViewById(R.id.heartbeat5);
         //Button heartbeatButton6 = (Button) findViewById(R.id.heartbeat6);
         Button heartbeatButton7 = (Button) findViewById(R.id.heartbeat7);
         //Button heartbeatButton8 = (Button) findViewById(R.id.heartbeat8);
@@ -45,7 +45,7 @@ public class Heartbeat extends AppCompatActivity implements OnClickListener {
         //heartbeatButton2.setOnClickListener(this);
         heartbeatButton3.setOnClickListener(this);
         //heartbeatButton4.setOnClickListener(this);
-        heartbeatButton5.setOnClickListener(this);
+//        heartbeatButton5.setOnClickListener(this);
         //heartbeatButton6.setOnClickListener(this);
         heartbeatButton7.setOnClickListener(this);
         //heartbeatButton8.setOnClickListener(this);
@@ -56,7 +56,7 @@ public class Heartbeat extends AppCompatActivity implements OnClickListener {
     }
 
     public void sendTextMessage(String message) {
-        writeToFile(System.currentTimeMillis() + ":" + message);
+//        writeToFile(System.currentTimeMillis() + ":" + message);
         Intent serviceIntent = new Intent(this, TextTransferService.class);
         serviceIntent.setAction(TextTransferService.ACTION_SEND_TEXT);
         serviceIntent.putExtra("message", message);
@@ -66,26 +66,26 @@ public class Heartbeat extends AppCompatActivity implements OnClickListener {
         this.startService(serviceIntent);
     }
 
-    protected void writeToFile(String text) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED) {
-
-            FileOutputStream fos = null;
-            try {
-                fos = new FileOutputStream(DeviceDetailFragment.file, true);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                text = text + "\n";
-                fos.write(text.getBytes());
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    protected void writeToFile(String text) {
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                == PackageManager.PERMISSION_GRANTED) {
+//
+//            FileOutputStream fos = null;
+//            try {
+//                fos = new FileOutputStream(DeviceDetailFragment.file, true);
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            }
+//
+//            try {
+//                text = text + "\n";
+//                fos.write(text.getBytes());
+//                fos.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     @Override
     public void onClick(View v) {
@@ -108,9 +108,9 @@ public class Heartbeat extends AppCompatActivity implements OnClickListener {
             //    sendTextMessage("heartbeat4");
             //    break;
 
-            case R.id.heartbeat5:
-                writeToFile(System.currentTimeMillis() + ":" + "parallel");
-                break;
+//            case R.id.heartbeat5:
+//                writeToFile(System.currentTimeMillis() + ":" + "parallel");
+//                break;
 
             //case R.id.heartbeat6:
             //    sendTextMessage("heartbeat6");
