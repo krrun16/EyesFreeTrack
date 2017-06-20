@@ -142,6 +142,13 @@ public class BleManager implements BleGattExecutor.BleExecutorListener {
         return true;
     }
 
+    public BluetoothGatt retrieveGatt(String address, Context context, Boolean autoConnect){
+        BluetoothDevice device = mAdapter.getRemoteDevice(address);
+        BluetoothGatt gatt = device.connectGatt(context, autoConnect, mExecutor);
+        gatt.discoverServices();
+        return gatt;
+    }
+
     public void clearExecutor() {
         if (mExecutor != null) {
             mExecutor.clear();
@@ -248,6 +255,10 @@ public class BleManager implements BleGattExecutor.BleExecutorListener {
             mExecutor.write(service, uuid, value);
             mExecutor.execute(mGatt);
         }
+    }
+    public void altWriteService(BluetoothGatt gatt, BluetoothGattService service, String uuid, byte[] value){
+        mExecutor.write(service, uuid, value);
+        mExecutor.execute(gatt);
     }
 
     public void enableNotification(BluetoothGattService service, String uuid, boolean enabled) {
@@ -411,7 +422,7 @@ public class BleManager implements BleGattExecutor.BleExecutorListener {
        // if (status == BluetoothGatt.GATT_SUCCESS) {
             // Call listener
             if (mBleListener != null)
-                mBleListener.onServicesDiscovered();
+                mBleListener.onServicesDiscovered(gatt);
        // }
 
         if (status != BluetoothGatt.GATT_SUCCESS) {
@@ -470,7 +481,7 @@ public class BleManager implements BleGattExecutor.BleExecutorListener {
         void onConnected();
         void onConnecting();
         void onDisconnected();
-        void onServicesDiscovered();
+        void onServicesDiscovered(BluetoothGatt gatt);
 
         void onDataAvailable(BluetoothGattCharacteristic characteristic);
         void onDataAvailable(BluetoothGattDescriptor descriptor);

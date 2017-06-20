@@ -1,5 +1,6 @@
 package com.example.krector;
 
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
@@ -138,7 +139,7 @@ public class UartInterfaceActivity extends AppCompatActivity implements BleManag
     }
 
     @Override
-    public void onServicesDiscovered() {
+    public void onServicesDiscovered(BluetoothGatt gatt) {
         mUartService = mBleManager.getGattService(UUID_SERVICE);
     }
 
