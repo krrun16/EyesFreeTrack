@@ -29,6 +29,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
@@ -459,7 +460,23 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     break;
 
                 case "ConnectHaptic":
-                    connectBluetooth();
+//                    connectBluetooth();
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                    dialog.setMessage("Bluetooth Connected");
+                    dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                            //your code
+                        }
+                    });
+                    dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                            //your code when cancel is clicked
+                        }
+                    });
+                    dialog.show();
                     break;
 
                 case "stop":
@@ -648,7 +665,13 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         }else if(gatt==rightGatt){
             rightServicesFound = true;
         }
-        sendBluetoothMessage("test","test");
+        if(leftServicesFound&&rightServicesFound){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            AlertDialog dialog = builder.setMessage("Bluetooth Connected")
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
+            sendBluetoothMessage("test","test");
+        }
     }
 
     @Override
@@ -912,6 +935,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     }
 
     public static void sendBluetoothMessage(String bandName, String message){
+        //Currently just tests if messages can be sent to the right wristband
         if(rightServicesFound){
             BluetoothGattService rightService = rightGatt.getService(UUID_SERVICE);
             String data = "!B11";
@@ -928,7 +952,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
             dataCrc[data2.length] = checksum;
 
 
-//            byte[] data = "!B11".getBytes(Charset.forName("UTF-8"));
             for (int i = 0; i < dataCrc.length; i += 20) {
 //                final byte[] chunk = Arrays.copyOfRange(dataCrc, i, Math.min(i + 20, dataCrc.length));
 //                BluetoothGattCharacteristic characteristic = rightService.getCharacteristic(UUID_TX);
