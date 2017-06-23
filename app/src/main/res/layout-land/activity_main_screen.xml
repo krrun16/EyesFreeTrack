@@ -5,45 +5,102 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.krector.wifip2p.MainScreen">
-
-    <Button
-        android:id="@+id/button19"
+    <TextView
+        android:id="@+id/straight_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Voice"
-        android:onClick="voiceButtonPressed"
-        tools:layout_editor_absoluteX="128dp"
+        android:layout_marginTop="30dp"
+        android:text="Straight Track"
+        tools:layout_editor_absoluteX="380dp"
         tools:layout_editor_absoluteY="107dp"
-        android:layout_alignBaseline="@+id/button20"
-        android:layout_alignBottom="@+id/button20"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="50dp"
-        android:layout_marginStart="50dp" />
-
-    <Button
-        android:id="@+id/button20"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Heartbeat"
-        android:onClick="heartbeatButtonPressed"
-        tools:layout_editor_absoluteX="244dp"
-        tools:layout_editor_absoluteY="107dp"
-        android:layout_alignBaseline="@+id/button21"
-        android:layout_alignBottom="@+id/button21"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-    <Button
-        android:id="@+id/button21"
+    <TextView
+        android:id="@+id/curved_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Haptic"
-        android:onClick="hapticButtonPressed"
+        android:text="Curved Track"
         tools:layout_editor_absoluteX="380dp"
         tools:layout_editor_absoluteY="107dp"
         android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/voice_curve"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="curvedVoiceButtonPressed"
+        android:text="Voice"
+        tools:layout_editor_absoluteX="128dp"
+        tools:layout_editor_absoluteY="107dp"
+        android:layout_alignBaseline="@+id/heart_curve"
+        android:layout_alignBottom="@+id/heart_curve"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="51dp" />
+
+    <Button
+        android:id="@+id/voice_straight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="straightVoiceButtonPressed"
+        android:text="Voice"
+        tools:layout_editor_absoluteX="128dp"
+        tools:layout_editor_absoluteY="107dp"
+        android:layout_alignBaseline="@+id/heart_straight"
+        android:layout_alignBottom="@+id/heart_straight"
+        android:layout_alignStart="@+id/voice_curve" />
+
+    <Button
+        android:id="@+id/heart_straight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Heartbeat"
+        android:onClick="straightHeartbeatButtonPressed"
+        tools:layout_editor_absoluteX="244dp"
+        tools:layout_editor_absoluteY="107dp"
+        android:layout_alignTop="@id/straight_text"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/heart_curve"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="curvedHeartbeatButtonPressed"
+        android:text="Heartbeat"
+        tools:layout_editor_absoluteX="244dp"
+        tools:layout_editor_absoluteY="107dp"
+        android:layout_marginTop="30dp"
+        android:layout_alignTop="@id/curved_text"
+        android:layout_alignStart="@+id/heart_straight" />
+
+    <Button
+        android:id="@+id/haptic_straight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Haptic"
+        android:onClick="straightHapticButtonPressed"
+        tools:layout_editor_absoluteX="380dp"
+        tools:layout_editor_absoluteY="107dp"
         android:layout_alignParentEnd="true"
+        android:layout_alignBaseline="@+id/heart_straight"
+        android:layout_marginEnd="60dp"
         android:layout_marginRight="69dp"
-        android:layout_marginEnd="69dp" />
+        />
+
+    <Button
+        android:id="@+id/haptic_curve"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/heart_curve"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="60dp"
+        android:layout_marginRight="69dp"
+        android:onClick="curvedHapticButtonPressed"
+        android:text="Haptic"
+        tools:layout_editor_absoluteX="380dp"
+        tools:layout_editor_absoluteY="107dp" />
+
+
 </RelativeLayout>

@@ -1,11 +1,11 @@
 package com.example.krector.wifip2p;
 
 import android.content.Context;
+import android.hardware.Camera;
+import android.hardware.Camera.PreviewCallback;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.hardware.Camera;
-import android.hardware.Camera.PreviewCallback;
 
 import java.io.IOException;
 import java.util.List;
