@@ -47,6 +47,7 @@ import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +60,7 @@ import com.example.krector.ble.BleManager;
 import com.example.krector.ble.BleUtils;
 
 import org.apache.commons.io.IOUtils;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -387,96 +389,79 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
             writeToFile(result);
             switch(result){
 
-                case "voice1":
+                case "voice_left_90":
                     playMedia(R.raw.v_left_90);
                     break;
 
-                //case "voice2":
-                //    playMedia(R.raw.vtwo);
-                //    break;
-
-                case "voice3":
+                case "voice_left_45":
                     playMedia(R.raw.v_left_45);
                     break;
 
-                //case "voice4":
-                //    playMedia(R.raw.vfour);
-                //    break;
-
-//                case "voice5":
-//                    playMedia(R.raw.vfive);
-//                    break;
-
-                //case "voice6":
-                //    playMedia(R.raw.vsix);
-                //    break;
-
-                case "voice7":
-                    playMedia(R.raw.v_right_45);
+                case "voice_left":
+                    //go left if on straight
                     break;
 
-                //case "voice8":
-                //    playMedia(R.raw.veight);
-                //    break;
-
-                case "voice9":
+                case "voice_right_90":
                     playMedia(R.raw.v_right_90);
                     break;
 
-                case "heartbeat1":
+                case "voice_right_45":
+                    playMedia(R.raw.v_right_45);
+                    break;
+
+                case "voice_right":
+                    //go right if on straight
+
+                case "heartbeat_left_90":
                     playMedia(R.raw.h_left_90);
                     break;
 
-                //case "heartbeat2":
-                //    playMedia(R.raw.htwo);
-                //    break;
-
-                case "heartbeat3":
+                case "heartbeat_left_45":
                     playMedia(R.raw.h_left_45);
                     break;
 
-                //case "heartbeat4":
-                //    playMedia(R.raw.hfour);
-                //    break;
-
-                //case "heartbeat5":
-                //    playMedia(R.raw.hfive);
-                //    break;
-
-                //case "heartbeat6":
-                //    playMedia(R.raw.hsix);
-                //    break;
-
-                case "heartbeat7":
-                    playMedia(R.raw.h_right_45);
+                case "heartbeat_left":
+                    //go left if on straight
                     break;
 
-                //case "heartbeat8":
-                //    playMedia(R.raw.height);
-                //    break;
+                case "heartbeat_right_90":
+                    playMedia(R.raw.h_left_90);
+                    break;
 
-                case "heartbeat9":
-                    playMedia(R.raw.h_right_90);
+                case "heartbeat_right_45":
+                    playMedia(R.raw.h_left_45);
+                    break;
+
+                case "heartbeat_right":
+                    //go right if on straight
                     break;
 
                 case "ConnectHaptic":
-//                    connectBluetooth();
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-                    dialog.setMessage("Bluetooth Connected");
-                    dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                            //your code
-                        }
-                    });
-                    dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    connectBluetooth();
+                    break;
 
-                        @Override
-                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                            //your code when cancel is clicked
-                        }
-                    });
-                    dialog.show();
+                case "haptic_left_90":
+                    sendBluetoothMessage("left","!B11");
+                    sendBluetoothMessage("left","!B10");
+                    break;
+
+                case "haptic_left_45":
+                    break;
+
+                case "haptic_left":
+                    //go left if on straight
+                    break;
+
+                case "haptic_right_90":
+                    sendBluetoothMessage("right","!B11");
+                    sendBluetoothMessage("right","!B10");
+                    break;
+
+                case "haptic_right_45":
+                    break;
+
+                case "haptic_right":
+                    //go right if on straight
                     break;
 
                 case "stop":
@@ -666,11 +651,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
             rightServicesFound = true;
         }
         if(leftServicesFound&&rightServicesFound){
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            AlertDialog dialog = builder.setMessage("Bluetooth Connected")
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show();
-            sendBluetoothMessage("test","test");
+            TextView text = (TextView)mContentView.findViewById(R.id.status_text);
+            text.setText("Bluetooth Connected");
         }
     }
 
@@ -934,32 +916,33 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         deviceData.uuids = uuids;
     }
 
-    public static void sendBluetoothMessage(String bandName, String message){
-        //Currently just tests if messages can be sent to the right wristband
-        if(rightServicesFound){
-            BluetoothGattService rightService = rightGatt.getService(UUID_SERVICE);
-            String data = "!B11";
-            ByteBuffer buffer = ByteBuffer.allocate(data.length()).order(java.nio.ByteOrder.LITTLE_ENDIAN);
-            buffer.put(data.getBytes());
-            byte[] data2 = buffer.array();
-            byte checksum = 0;
-            for (byte aData : data2) {
-                checksum += aData;
+    public static void sendBluetoothMessage(String bandName, String data){
+        //Currently just tests if messages can be sent to the right data
+        ByteBuffer buffer = ByteBuffer.allocate(data.length()).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+        buffer.put(data.getBytes());
+        byte[] data2 = buffer.array();
+        byte checksum = 0;
+        for (byte aData : data2) {
+            checksum += aData;
+        }
+        checksum = (byte) (~checksum);
+        byte dataCrc[] = new byte[data2.length + 1];
+        System.arraycopy(data2, 0, dataCrc, 0, data2.length);
+        dataCrc[data2.length] = checksum;
+
+        if(bandName.equals("right")){
+            if(rightServicesFound){
+                BluetoothGattService rightService = rightGatt.getService(UUID_SERVICE);
+                for (int i = 0; i < dataCrc.length; i += 20) {
+                    mBluetoothManager.altWriteService(rightGatt, rightService, UUID_TX.toString(), dataCrc);
+                }
             }
-            checksum = (byte) (~checksum);
-            byte dataCrc[] = new byte[data2.length + 1];
-            System.arraycopy(data2, 0, dataCrc, 0, data2.length);
-            dataCrc[data2.length] = checksum;
-
-
-            for (int i = 0; i < dataCrc.length; i += 20) {
-//                final byte[] chunk = Arrays.copyOfRange(dataCrc, i, Math.min(i + 20, dataCrc.length));
-//                BluetoothGattCharacteristic characteristic = rightService.getCharacteristic(UUID_TX);
-//                characteristic.setValue(chunk);
-//                Boolean check = leftGatt.writeCharacteristic(characteristic);
-//                Log.e("adsf","asf");
-                mBluetoothManager.altWriteService(rightGatt, rightService, UUID_TX.toString(), dataCrc);
-                Log.e("written","written");
+        }else if(bandName.equals("left")){
+            if(leftServicesFound){
+                BluetoothGattService leftService = leftGatt.getService(UUID_SERVICE);
+                for (int i = 0; i < dataCrc.length; i += 20) {
+                    mBluetoothManager.altWriteService(leftGatt, leftService, UUID_TX.toString(), dataCrc);
+                }
             }
         }
     }

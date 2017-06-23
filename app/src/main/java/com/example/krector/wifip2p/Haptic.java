@@ -11,43 +11,35 @@ import android.widget.Button;
 public class Haptic extends AppCompatActivity implements OnClickListener{
 
     private String hostaddress;
-
+    private Boolean curved;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent myIntent = getIntent();
         hostaddress = myIntent.getStringExtra("hostaddress");
+        curved = myIntent.getBooleanExtra("curved",true);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_haptic);
 
-        Button hapticButton1 = (Button) findViewById(R.id.haptic1);
-        //Button hapticButton2 = (Button) findViewById(R.id.haptic2);
-        Button hapticButton3 = (Button) findViewById(R.id.haptic3);
-        //Button hapticButton4 = (Button) findViewById(R.id.haptic4);
-        Button hapticButton5 = (Button) findViewById(R.id.haptic5);
-        //Button hapticButton6 = (Button) findViewById(R.id.haptic6);
-        Button hapticButton7 = (Button) findViewById(R.id.haptic7);
-        //Button hapticButton8 = (Button) findViewById(R.id.haptic8);
-        Button hapticButton9 = (Button) findViewById(R.id.haptic9);
+        Button left90Button = (Button) findViewById(R.id.haptic_left_90);
+        Button left45Button = (Button) findViewById(R.id.haptic_left_45);
+        Button connectButton = (Button) findViewById(R.id.haptic_connect);
+        Button right45Button = (Button) findViewById(R.id.haptic_right_45);
+        Button right90Button = (Button) findViewById(R.id.haptic_right_90);
         Button stopButton = (Button) findViewById(R.id.hapticstop);
         Button hapticstartbutton = (Button) findViewById(R.id.hapticstart);
 
-        hapticButton1.setOnClickListener(this);
-        //hapticButton2.setOnClickListener(this);
-        hapticButton3.setOnClickListener(this);
-        //hapticButton4.setOnClickListener(this);
-        hapticButton5.setOnClickListener(this);
-        //hapticButton6.setOnClickListener(this);
-        hapticButton7.setOnClickListener(this);
-        //hapticButton8.setOnClickListener(this);
-        hapticButton9.setOnClickListener(this);
+        left90Button.setOnClickListener(this);
+        left45Button.setOnClickListener(this);
+        connectButton.setOnClickListener(this);
+        right45Button.setOnClickListener(this);
+        right90Button.setOnClickListener(this);
         stopButton.setOnClickListener(this);
         hapticstartbutton.setOnClickListener(this);
 
     }
 
     public void sendTextMessage(String message) {
-//        writeToFile(System.currentTimeMillis() + ":" + message);
         Intent serviceIntent = new Intent(this, TextTransferService.class);
         serviceIntent.setAction(TextTransferService.ACTION_SEND_TEXT);
         serviceIntent.putExtra("message", message);
@@ -57,66 +49,45 @@ public class Haptic extends AppCompatActivity implements OnClickListener{
         this.startService(serviceIntent);
     }
 
-//    protected void writeToFile(String text) {
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                == PackageManager.PERMISSION_GRANTED) {
-//
-//            FileOutputStream fos = null;
-//            try {
-//                fos = new FileOutputStream(DeviceDetailFragment.file, true);
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//
-//            try {
-//                text = text + "\n";
-//                fos.write(text.getBytes());
-//                fos.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
     @Override
     public void onClick(View v) {
 
         switch(v.getId()){
 
-            case R.id.haptic1:
-                sendTextMessage("haptic1");
+            case R.id.haptic_left_90:
+                if(curved) {
+                    sendTextMessage("haptic_left_90");
+                }else{
+                    sendTextMessage("haptic_left");
+                }
                 break;
 
-            //case R.id.haptic2:
-            //    sendTextMessage("haptic2");
-            //    break;
-
-            case R.id.haptic3:
-                sendTextMessage("haptic3");
+            case R.id.haptic_left_45:
+                if(curved) {
+                    sendTextMessage("haptic_left_45");
+                }else{
+                    sendTextMessage("haptic_left");
+                }
                 break;
 
-            //case R.id.haptic4:
-            //    sendTextMessage("haptic4");
-            //    break;
-
-            case R.id.haptic5:
+            case R.id.haptic_connect:
                 sendTextMessage("ConnectHaptic");
                 break;
 
-            //case R.id.haptic6:
-            //    sendTextMessage("haptic6");
-            //    break;
-
-            case R.id.haptic7:
-                sendTextMessage("haptic7");
+            case R.id.haptic_right_45:
+                if(curved) {
+                    sendTextMessage("haptic_right_45");
+                }else{
+                    sendTextMessage("haptic_right");
+                }
                 break;
 
-            //case R.id.haptic8:
-            //    sendTextMessage("haptic8");
-            //    break;
-
-            case R.id.haptic9:
-                sendTextMessage("haptic9");
+            case R.id.haptic_right_90:
+                if(curved) {
+                    sendTextMessage("haptic_right_90");
+                }else{
+                    sendTextMessage("haptic_right");
+                }
                 break;
 
             case R.id.hapticstop:

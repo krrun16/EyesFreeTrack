@@ -17,7 +17,7 @@
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintRight_creator="1"
         android:layout_marginEnd="8dp"
-        app:layout_constraintRight_toRightOf="@+id/haptic5"
+        app:layout_constraintRight_toRightOf="@+id/haptic_connect"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginRight="8dp" />
 
@@ -34,27 +34,27 @@
         app:layout_constraintBottom_toBottomOf="@+id/hapticstop"
         android:layout_marginEnd="46dp"
         tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/haptic1"
+        app:layout_constraintLeft_toLeftOf="@+id/haptic_left_90"
         app:layout_constraintTop_toTopOf="@+id/hapticstop"
         android:layout_marginLeft="47dp"
         android:layout_marginRight="46dp" />
 
     <Button
-        android:id="@+id/haptic1"
+        android:id="@+id/haptic_left_90"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="1"
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintBottom_creator="1"
         android:layout_marginStart="38dp"
-        app:layout_constraintBottom_toBottomOf="@+id/haptic9"
+        app:layout_constraintBottom_toBottomOf="@+id/haptic_right_90"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/haptic9"
+        app:layout_constraintTop_toTopOf="@+id/haptic_right_90"
         android:layout_marginLeft="38dp" />
 
     <Button
-        android:id="@+id/haptic9"
+        android:id="@+id/haptic_right_90"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="9"
@@ -67,7 +67,7 @@
         android:layout_marginRight="45dp" />
 
     <Button
-        android:id="@+id/haptic7"
+        android:id="@+id/haptic_right_45"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="7"
@@ -76,24 +76,24 @@
         app:layout_constraintHorizontal_bias="0.77"
         tools:layout_constraintTop_creator="1"
         android:layout_marginTop="41dp"
-        app:layout_constraintTop_toBottomOf="@+id/haptic5" />
+        app:layout_constraintTop_toBottomOf="@+id/haptic_connect" />
 
     <Button
-        android:id="@+id/haptic3"
+        android:id="@+id/haptic_left_45"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="3"
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintBottom_creator="1"
         android:layout_marginStart="60dp"
-        app:layout_constraintBottom_toBottomOf="@+id/haptic7"
+        app:layout_constraintBottom_toBottomOf="@+id/haptic_right_45"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/haptic7"
+        app:layout_constraintTop_toTopOf="@+id/haptic_right_45"
         android:layout_marginLeft="60dp" />
 
     <Button
-        android:id="@+id/haptic5"
+        android:id="@+id/haptic_connect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Connect"
@@ -101,7 +101,7 @@
         android:layout_marginTop="65dp"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/haptic3" />
+        app:layout_constraintLeft_toRightOf="@+id/haptic_left_45" />
 
     <Button
         android:id="@+id/hapticstop"

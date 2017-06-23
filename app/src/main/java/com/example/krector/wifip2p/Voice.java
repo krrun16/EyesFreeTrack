@@ -11,43 +11,34 @@ import android.widget.Button;
 public class Voice extends AppCompatActivity implements OnClickListener {
 
     private String hostaddress;
+    private Boolean curved;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent myIntent = getIntent();
         hostaddress = myIntent.getStringExtra("hostaddress");
+        curved = myIntent.getBooleanExtra("curved",true);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_voice);
 
-        Button voiceButton1 = (Button) findViewById(R.id.voice1);
-        //Button voiceButton2 = (Button) findViewById(R.id.voice2);
-        Button voiceButton3 = (Button) findViewById(R.id.voice3);
-        //Button voiceButton4 = (Button) findViewById(R.id.voice4);
-//        Button voiceButton5 = (Button) findViewById(R.id.voice5);
-        //Button voiceButton6 = (Button) findViewById(R.id.voice6);
-        Button voiceButton7 = (Button) findViewById(R.id.voice7);
-        //Button voiceButton8 = (Button) findViewById(R.id.voice8);
-        Button voiceButton9 = (Button) findViewById(R.id.voice9);
+        Button left90Button = (Button) findViewById(R.id.voice_left_90);
+        Button left45Button = (Button) findViewById(R.id.voice_left_45);
+        Button right45Button = (Button) findViewById(R.id.voice_right_45);
+        Button right90Button = (Button) findViewById(R.id.voice_right_90);
         Button stopButton = (Button) findViewById(R.id.voicestop);
         Button voicestartbutton = (Button) findViewById(R.id.voicestart);
 
-        voiceButton1.setOnClickListener(this);
-        //voiceButton2.setOnClickListener(this);
-        voiceButton3.setOnClickListener(this);
-        //voiceButton4.setOnClickListener(this);
-//        voiceButton5.setOnClickListener(this);
-        //voiceButton6.setOnClickListener(this);
-        voiceButton7.setOnClickListener(this);
-        //voiceButton8.setOnClickListener(this);
-        voiceButton9.setOnClickListener(this);
+        left90Button.setOnClickListener(this);
+        left45Button.setOnClickListener(this);
+        right45Button.setOnClickListener(this);
+        right90Button.setOnClickListener(this);
         stopButton.setOnClickListener(this);
         voicestartbutton.setOnClickListener(this);
 
     }
 
     public void sendTextMessage(String message) {
-        //writeToFile(System.currentTimeMillis() + ":" + message);
         Intent serviceIntent = new Intent(this, TextTransferService.class);
         serviceIntent.setAction(TextTransferService.ACTION_SEND_TEXT);
         serviceIntent.putExtra("message", message);
@@ -63,41 +54,36 @@ public class Voice extends AppCompatActivity implements OnClickListener {
 
         switch(v.getId()){
 
-            case R.id.voice1:
-                sendTextMessage("voice9");
+            case R.id.voice_left_90:
+                if(curved) {
+                    sendTextMessage("voice_left_90");
+                }else{
+                    sendTextMessage("voice_left");
+                }
                 break;
 
-            //case R.id.voice2:
-            //    sendTextMessage("voice8");
-            //    break;
-
-            case R.id.voice3:
-                sendTextMessage("voice7");
+            case R.id.voice_left_45:
+                if(curved) {
+                    sendTextMessage("voice_left_45");
+                }else{
+                    sendTextMessage("voice_left");
+                }
                 break;
 
-            //case R.id.voice4:
-            //    sendTextMessage("voice6");
-            //    break;
-
-//            case R.id.voice5:
-////                writeToFile(System.currentTimeMillis() + ":" + "parallel");
-//                sendTextMessage("voice5");
-//                break;
-
-            //case R.id.voice6:
-            //    sendTextMessage("voice4");
-            //    break;
-
-            case R.id.voice7:
-                sendTextMessage("voice3");
+            case R.id.voice_right_90:
+                if(curved) {
+                    sendTextMessage("voice_right_90");
+                }else{
+                    sendTextMessage("voice_right");
+                }
                 break;
 
-            //case R.id.voice8:
-            //    sendTextMessage("voice2");
-            //    break;
-
-            case R.id.voice9:
-                sendTextMessage("voice1");
+            case R.id.voice_right_45:
+                if(curved) {
+                    sendTextMessage("voice_right_45");
+                }else{
+                    sendTextMessage("voice_right");
+                }
                 break;
 
             case R.id.voicestop:

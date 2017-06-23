@@ -79,27 +79,27 @@
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintBottom_creator="1"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="@+id/heartbeat3"
+        app:layout_constraintRight_toRightOf="@+id/heartbeat_left_45"
         tools:layout_constraintLeft_creator="1"
         android:layout_marginBottom="42dp"
-        app:layout_constraintLeft_toLeftOf="@+id/heartbeat3" />
+        app:layout_constraintLeft_toLeftOf="@+id/heartbeat_left_45" />
 
     <Button
-        android:id="@+id/heartbeat1"
+        android:id="@+id/heartbeat_left_90"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="1"
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintBottom_creator="1"
         android:layout_marginStart="38dp"
-        app:layout_constraintBottom_toBottomOf="@+id/heartbeat9"
+        app:layout_constraintBottom_toBottomOf="@+id/heartbeat_right_90"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/heartbeat9"
+        app:layout_constraintTop_toTopOf="@+id/heartbeat_right_90"
         android:layout_marginLeft="38dp" />
 
     <Button
-        android:id="@+id/heartbeat9"
+        android:id="@+id/heartbeat_right_90"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="9"
@@ -112,7 +112,7 @@
         android:layout_marginRight="45dp" />
 
     <Button
-        android:id="@+id/heartbeat7"
+        android:id="@+id/heartbeat_right_45"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="7"
@@ -125,13 +125,13 @@
         android:layout_marginLeft="60dp" />
 
     <Button
-        android:id="@+id/heartbeat3"
+        android:id="@+id/heartbeat_left_45"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="3"
         android:layout_marginStart="116dp"
         tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toTopOf="@+id/heartbeat1"
+        app:layout_constraintBottom_toTopOf="@+id/heartbeat_left_90"
         tools:layout_constraintLeft_creator="1"
         android:layout_marginBottom="126dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -144,10 +144,10 @@
         android:text="5"
         android:layout_marginStart="52dp"
         tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toTopOf="@+id/heartbeat3"
+        app:layout_constraintBottom_toTopOf="@+id/heartbeat_left_45"
         tools:layout_constraintLeft_creator="1"
         android:layout_marginBottom="44dp"
-        app:layout_constraintLeft_toRightOf="@+id/heartbeat3"
+        app:layout_constraintLeft_toRightOf="@+id/heartbeat_left_45"
         android:layout_marginLeft="52dp" />
 
     <Button
