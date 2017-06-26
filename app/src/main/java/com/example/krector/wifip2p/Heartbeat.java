@@ -29,6 +29,18 @@ public class Heartbeat extends AppCompatActivity implements OnClickListener {
         Button stopButton = (Button) findViewById(R.id.heartbeatstop);
         Button heartbeatstartbutton = (Button) findViewById(R.id.heartbeatstart);
 
+        if(curved){
+            left90Button.setText("90°");
+            left45Button.setText("45°");
+            right90Button.setText("90°");
+            right45Button.setText("45°");
+        }else{
+            left90Button.setText("OFF");
+            left45Button.setText("ON");
+            right45Button.setText("ON");
+            right90Button.setText("OFF");
+        }
+
         left90Button.setOnClickListener(this);
         left45Button.setOnClickListener(this);
         right45Button.setOnClickListener(this);
@@ -57,7 +69,7 @@ public class Heartbeat extends AppCompatActivity implements OnClickListener {
                 if(curved){
                     sendTextMessage("heartbeat_left_90");
                 }else{
-                    sendTextMessage("heartbeat_left");
+                    sendTextMessage("heartbeat_left_off");
                 }
                 break;
 
@@ -65,7 +77,7 @@ public class Heartbeat extends AppCompatActivity implements OnClickListener {
                 if(curved) {
                     sendTextMessage("heartbeat_left_45");
                 }else{
-                    sendTextMessage("heartbeat_left");
+                    sendTextMessage("heartbeat_left_on");
                 }
                 break;
 
@@ -73,7 +85,7 @@ public class Heartbeat extends AppCompatActivity implements OnClickListener {
                 if(curved){
                     sendTextMessage("heartbeat_right_90");
                 }else{
-                    sendTextMessage("heartbeat_right");
+                    sendTextMessage("heartbeat_right_off");
                 }
                 break;
 
@@ -81,7 +93,7 @@ public class Heartbeat extends AppCompatActivity implements OnClickListener {
                 if(curved) {
                     sendTextMessage("heartbeat_right_45");
                 }else{
-                    sendTextMessage("heartbeat_right");
+                    sendTextMessage("heartbeat_right_on");
                 }
                 break;
 

@@ -364,26 +364,29 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
             }
         }
 
-        protected void playMedia(int track) {
-            if(mp!=null){
-                mp.stop();
-                mp.release();
-                mp = null;
-            }
+        protected void playMedia(int track, boolean loop) {
+            stopMedia();
             mp = MediaPlayer.create(context, track);
             mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
 
-                    if (mediaPlayer != null) {
-                        mediaPlayer.stop();
-                        mediaPlayer.release();
-                    }
+//                    if (mediaPlayer != null) {
+//                        mediaPlayer.stop();
+//                        mediaPlayer.release();
+//                    }
                 }
             });
-            mp.setLooping(false);
+            mp.setLooping(loop);
             mp.seekTo(0);
             mp.start();
+        }
+        protected void stopMedia(){
+            if(mp!=null){
+                mp.stop();
+                mp.release();
+                mp = null;
+            }
         }
 
         /*
@@ -398,50 +401,75 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
             switch(result){
 
                 case "voice_left_90":
-                    playMedia(R.raw.v_left_90);
+                    playMedia(R.raw.v_left_90, false);
                     break;
 
                 case "voice_left_45":
-                    playMedia(R.raw.v_left_45);
+                    playMedia(R.raw.v_left_45, false);
                     break;
 
-                case "voice_left":
+                case "voice_left_on":
                     //go left if on straight
+                    playMedia(R.raw.v_left_90, true);
+                    break;
+
+                case "voice_left_off":
+                    //go left if on straight
+                    stopMedia();
                     break;
 
                 case "voice_right_90":
-                    playMedia(R.raw.v_right_90);
+                    playMedia(R.raw.v_right_90, false);
                     break;
 
                 case "voice_right_45":
-                    playMedia(R.raw.v_right_45);
+                    playMedia(R.raw.v_right_45, false);
                     break;
 
-                case "voice_right":
+                case "voice_right_on":
                     //go right if on straight
+                    playMedia(R.raw.v_right_90, true);
+                    break;
+
+                case "voice_right_off":
+                    //go right if on straight
+                    stopMedia();
+                    break;
 
                 case "heartbeat_left_90":
-                    playMedia(R.raw.h_left_90);
+                    playMedia(R.raw.h_left_90, false);
                     break;
 
                 case "heartbeat_left_45":
-                    playMedia(R.raw.h_left_45);
+                    playMedia(R.raw.h_left_45, false);
                     break;
 
-                case "heartbeat_left":
+                case "heartbeat_left_on":
                     //go left if on straight
+                    playMedia(R.raw.h_left_90, true);
+                    break;
+
+                case "heartbeat_left_off":
+                    //go left if on straight
+                    stopMedia();
                     break;
 
                 case "heartbeat_right_90":
-                    playMedia(R.raw.h_left_90);
+                    playMedia(R.raw.h_left_90, false);
                     break;
 
                 case "heartbeat_right_45":
-                    playMedia(R.raw.h_left_45);
+                    playMedia(R.raw.h_left_45, false);
                     break;
 
-                case "heartbeat_right":
+                case "heartbeat_right_on":
                     //go right if on straight
+                    playMedia(R.raw.h_left_90, true);
+                    break;
+
+                case "heartbeat_right_off":
+                    //go right if on straight
+                    stopMedia();
                     break;
 
                 case "ConnectHaptic":
@@ -486,7 +514,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                             sendBluetoothMessage("right","!B21");
                         }
                     }, 100);
-                    //                    sendBluetoothMessage("right","!B20");
                     break;
 
                 case "haptic_right_45":
@@ -497,7 +524,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                             sendBluetoothMessage("right","!B11");
                         }
                     }, 100);
-//                    sendBluetoothMessage("right","!B10");
                     break;
 
                 case "haptic_right_on":
@@ -510,7 +536,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
                 case "stop":
                     if(SubjectCamera.isRecording) {
-                        playMedia(R.raw.stop);
+                        playMedia(R.raw.stop, false);
                         SubjectCamera.endRecording();
                         this.cameraStarted = false;
                     }
@@ -518,7 +544,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
                 case "start":
                     if(!SubjectCamera.isRecording) {
-                        playMedia(R.raw.start);
+                        playMedia(R.raw.start, false);
                         Intent intent = new Intent((Activity) context, SubjectCamera.class);
                         ((Activity) context).startActivityForResult(intent, 1);
                         this.cameraStarted = true;

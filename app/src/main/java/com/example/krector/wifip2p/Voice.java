@@ -29,6 +29,18 @@ public class Voice extends AppCompatActivity implements OnClickListener {
         Button stopButton = (Button) findViewById(R.id.voicestop);
         Button voicestartbutton = (Button) findViewById(R.id.voicestart);
 
+        if(curved){
+            left90Button.setText("90°");
+            left45Button.setText("45°");
+            right90Button.setText("90°");
+            right45Button.setText("45°");
+        }else{
+            left90Button.setText("OFF");
+            left45Button.setText("ON");
+            right45Button.setText("ON");
+            right90Button.setText("OFF");
+        }
+
         left90Button.setOnClickListener(this);
         left45Button.setOnClickListener(this);
         right45Button.setOnClickListener(this);
@@ -58,7 +70,7 @@ public class Voice extends AppCompatActivity implements OnClickListener {
                 if(curved) {
                     sendTextMessage("voice_left_90");
                 }else{
-                    sendTextMessage("voice_left");
+                    sendTextMessage("voice_left_off");
                 }
                 break;
 
@@ -66,7 +78,7 @@ public class Voice extends AppCompatActivity implements OnClickListener {
                 if(curved) {
                     sendTextMessage("voice_left_45");
                 }else{
-                    sendTextMessage("voice_left");
+                    sendTextMessage("voice_left_on");
                 }
                 break;
 
@@ -74,7 +86,7 @@ public class Voice extends AppCompatActivity implements OnClickListener {
                 if(curved) {
                     sendTextMessage("voice_right_90");
                 }else{
-                    sendTextMessage("voice_right");
+                    sendTextMessage("voice_right_off");
                 }
                 break;
 
@@ -82,7 +94,7 @@ public class Voice extends AppCompatActivity implements OnClickListener {
                 if(curved) {
                     sendTextMessage("voice_right_45");
                 }else{
-                    sendTextMessage("voice_right");
+                    sendTextMessage("voice_right_on");
                 }
                 break;
 

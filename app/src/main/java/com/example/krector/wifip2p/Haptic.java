@@ -29,6 +29,18 @@ public class Haptic extends AppCompatActivity implements OnClickListener{
         Button stopButton = (Button) findViewById(R.id.hapticstop);
         Button hapticstartbutton = (Button) findViewById(R.id.hapticstart);
 
+        if(curved){
+           left90Button.setText("90°");
+            left45Button.setText("45°");
+            right90Button.setText("90°");
+            right45Button.setText("45°");
+        }else{
+            left90Button.setText("OFF");
+            left45Button.setText("ON");
+            right45Button.setText("ON");
+            right90Button.setText("OFF");
+        }
+
         left90Button.setOnClickListener(this);
         left45Button.setOnClickListener(this);
         connectButton.setOnClickListener(this);
