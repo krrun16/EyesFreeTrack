@@ -43,6 +43,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
@@ -389,6 +390,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
          */
         @Override
         protected void onPostExecute(String result) {
+            final Handler handler = new Handler();
             statusText.setText("String copied - " + result);
             writeToFile(result);
             switch(result){
@@ -445,33 +447,69 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     break;
 
                 case "haptic_left_90":
-                    sendBluetoothMessage("left","!B21");
-                    sendBluetoothMessage("left","!B20");
+                    sendBluetoothMessage("left","!G21");
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendBluetoothMessage("left","!B21");
+                        }
+                    }, 100);
+//                    sendBluetoothMessage("left","!B20");
                     break;
 
                 case "haptic_left_45":
-                    sendBluetoothMessage("left","!B11");
-                    sendBluetoothMessage("left","!B10");
+                    sendBluetoothMessage("left","!G11");
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendBluetoothMessage("left","!B11");
+                        }
+                    }, 100);
+                    //                    sendBluetoothMessage("left","!B10");
                     break;
 
                 case "haptic_left":
-                    sendBluetoothMessage("left","!B11");
-                    sendBluetoothMessage("left","!B10");
+                    sendBluetoothMessage("left","!G11");
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendBluetoothMessage("left","!B11");
+                        }
+                    }, 100);
+                    //                    sendBluetoothMessage("left","!B10");
                     break;
 
                 case "haptic_right_90":
-                    sendBluetoothMessage("right","!B21");
-                    sendBluetoothMessage("right","!B20");
+                    sendBluetoothMessage("right","!G21");
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendBluetoothMessage("right","!B21");
+                        }
+                    }, 100);
+                    //                    sendBluetoothMessage("right","!B20");
                     break;
 
                 case "haptic_right_45":
-                    sendBluetoothMessage("left","!B11");
-                    sendBluetoothMessage("left","!B10");
+                    sendBluetoothMessage("right","!G11");
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendBluetoothMessage("right","!B11");
+                        }
+                    }, 100);
+//                    sendBluetoothMessage("right","!B10");
                     break;
 
                 case "haptic_right":
-                    sendBluetoothMessage("right","!B11");
-                    sendBluetoothMessage("right","!B10");
+                    sendBluetoothMessage("right","!G11");
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendBluetoothMessage("right","!B11");
+                        }
+                    }, 100);
+                    //                    sendBluetoothMessage("right","!B10");
                     break;
 
                 case "stop":
@@ -561,10 +599,12 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         return null;
     }
     private static void connectBluetooth() {
-        if(rightGatt!=null){
-            sendBluetoothMessage("adf","asdf");
-            return;
-        }
+        if(rightGatt!=null)rightGatt.disconnect();
+        if(leftGatt!=null)leftGatt.disconnect();
+        rightGatt = null;
+        leftGatt = null;
+        rightServicesFound = false;
+        leftServicesFound = false;
         mAdapter = BleUtils.getBluetoothAdapter(baseContext);
         Boolean check = mAdapter.isEnabled();
         if (BleUtils.getBleStatus(baseContext) != BleUtils.STATUS_BLE_ENABLED) {
@@ -629,7 +669,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     private static void checkForHaptic(){
         Log.e("EyesFreeTrack","Just need to pause");
         if(rightGatt!=null){
-            sendBluetoothMessage("test","test");
+//            sendBluetoothMessage("test","test");
             return;
         }
         if(mScannedDevices.size()>2){
@@ -939,7 +979,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         byte dataCrc[] = new byte[data2.length + 1];
         System.arraycopy(data2, 0, dataCrc, 0, data2.length);
         dataCrc[data2.length] = checksum;
-
         if(bandName.equals("right")){
             if(rightServicesFound){
                 BluetoothGattService rightService = rightGatt.getService(UUID_SERVICE);
