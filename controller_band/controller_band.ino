@@ -1,15 +1,15 @@
 /*********************************************************************
-This is an example for our nRF51822 based Bluefruit LE modules
+ This is an example for our nRF51822 based Bluefruit LE modules
 
-Pick one up today in the adafruit shop!
+ Pick one up today in the adafruit shop!
 
-Adafruit invests time and resources providing this open source code,
-please support Adafruit and open-source hardware by purchasing
-products from Adafruit!
+ Adafruit invests time and resources providing this open source code,
+ please support Adafruit and open-source hardware by purchasing
+ products from Adafruit!
 
-MIT license, check LICENSE for more information
-All text above, and the splash screen below must be included in
-any redistribution
+ MIT license, check LICENSE for more information
+ All text above, and the splash screen below must be included in
+ any redistribution
 *********************************************************************/
 
 #include <string.h>
@@ -59,10 +59,6 @@ any redistribution
     #define FACTORYRESET_ENABLE         1
     #define MINIMUM_FIRMWARE_VERSION    "0.6.6"
     #define MODE_LED_BEHAVIOUR          "MODE"
-    #define BLUEFRUIT_HWSERIAL_NAME  Serial
-    #define BLUEFRUIT_UART_MODE_PIN         -1
-    #define BLUEFRUIT_UART_CTS_PIN          -1   // Not used with FLORA
-    #define BLUEFRUIT_UART_RTS_PIN          -1   // Not used with FLORA
 /*=========================================================================*/
 
 // Create the bluefruit object, either software serial...uncomment these lines
@@ -74,10 +70,10 @@ Adafruit_BluefruitLE_UART ble(bluefruitSS, BLUEFRUIT_UART_MODE_PIN,
 */
 
 /* ...or hardware serial, which does not need the RTS/CTS pins. Uncomment this line */
-Adafruit_BluefruitLE_UART ble(BLUEFRUIT_HWSERIAL_NAME, BLUEFRUIT_UART_MODE_PIN);
+// Adafruit_BluefruitLE_UART ble(BLUEFRUIT_HWSERIAL_NAME, BLUEFRUIT_UART_MODE_PIN);
 
 /* ...hardware SPI, using SCK/MOSI/MISO hardware SPI pins and then user selected CS/IRQ/RST */
-//Adafruit_BluefruitLE_SPI ble(BLUEFRUIT_SPI_CS, BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_RST);
+Adafruit_BluefruitLE_SPI ble(BLUEFRUIT_SPI_CS, BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_RST);
 
 /* ...software SPI, using SCK/MOSI/MISO user-defined SPI pins and then user selected CS/IRQ/RST */
 //Adafruit_BluefruitLE_SPI ble(BLUEFRUIT_SPI_SCK, BLUEFRUIT_SPI_MISO,
@@ -108,26 +104,26 @@ extern uint8_t packetbuffer[];
 /**************************************************************************/
 void setup(void)
 {
-  //while (!Serial);  // required for Flora & Micro
-  //delay(500);
+  while (!Serial);  // required for Flora & Micro
+  delay(500);
 
-  //Serial.begin(115200);
-  //Serial.println(F("Adafruit Bluefruit App Controller Example"));
-  //Serial.println(F("-----------------------------------------"));
+  Serial.begin(115200);
+  Serial.println(F("Adafruit Bluefruit App Controller Example"));
+  Serial.println(F("-----------------------------------------"));
 
   /* Initialise the module */
-  //Serial.print(F("Initialising the Bluefruit LE module: "));
+  Serial.print(F("Initialising the Bluefruit LE module: "));
 
   if ( !ble.begin(VERBOSE_MODE) )
   {
     error(F("Couldn't find Bluefruit, make sure it's in CoMmanD mode & check wiring?"));
   }
-  //Serial.println( F("OK!") );
+  Serial.println( F("OK!") );
 
   if ( FACTORYRESET_ENABLE )
   {
     /* Perform a factory reset to make sure everything is in a known state */
-    //Serial.println(F("Performing a factory reset: "));
+    Serial.println(F("Performing a factory reset: "));
     if ( ! ble.factoryReset() ){
       error(F("Couldn't factory reset"));
     }
@@ -137,13 +133,13 @@ void setup(void)
   /* Disable command echo from Bluefruit */
   ble.echo(false);
 
-  //Serial.println("Requesting Bluefruit info:");
+  Serial.println("Requesting Bluefruit info:");
   /* Print Bluefruit information */
-  //ble.info();
+  ble.info();
 
-  //Serial.println(F("Please use Adafruit Bluefruit LE app to connect in Controller mode"));
-  //Serial.println(F("Then activate/use the sensors, color picker, game controller, etc!"));
-  //Serial.println();
+  Serial.println(F("Please use Adafruit Bluefruit LE app to connect in Controller mode"));
+  Serial.println(F("Then activate/use the sensors, color picker, game controller, etc!"));
+  Serial.println();
 
   ble.verbose(false);  // debug info is a little annoying after this point!
 
@@ -152,26 +148,22 @@ void setup(void)
       delay(500);
   }
 
-  //Serial.println(F("******************************"));
+  Serial.println(F("******************************"));
 
   // LED Activity command is only supported from 0.6.6
   if ( ble.isVersionAtLeast(MINIMUM_FIRMWARE_VERSION) )
   {
     // Change Mode LED Activity
-    //Serial.println(F("Change LED activity to " MODE_LED_BEHAVIOUR));
+    Serial.println(F("Change LED activity to " MODE_LED_BEHAVIOUR));
     ble.sendCommandCheckOK("AT+HWModeLED=" MODE_LED_BEHAVIOUR);
   }
 
   // Set Bluefruit to DATA mode
-  //Serial.println( F("Switching to DATA mode!") );
+  Serial.println( F("Switching to DATA mode!") );
   ble.setMode(BLUEFRUIT_MODE_DATA);
 
-  //Serial.println(F("******************************"));
+  Serial.println(F("******************************"));
 
-  pinMode(6, OUTPUT);
-  pinMode(9, OUTPUT);
-  pinMode(10, OUTPUT);
-  pinMode(12, OUTPUT);
 }
 
 /**************************************************************************/
@@ -187,23 +179,8 @@ void loop(void)
 
   /* Got a packet! */
   // printHex(packetbuffer, len);
-
-  // Color
-  if (packetbuffer[1] == 'C') {
-    uint8_t red = packetbuffer[2];
-    uint8_t green = packetbuffer[3];
-    uint8_t blue = packetbuffer[4];
-    Serial.print ("RGB #");
-    if (red < 0x10) Serial.print("0");
-    Serial.print(red, HEX);
-    if (green < 0x10) Serial.print("0");
-    Serial.print(green, HEX);
-    if (blue < 0x10) Serial.print("0");
-    Serial.println(blue, HEX);
-  }
-
   // Buttons
-  if (packetbuffer[1] == 'B') {
+if (packetbuffer[1] == 'B') {
     uint8_t buttnum = packetbuffer[2] - '0';
     boolean pressed = packetbuffer[3] - '0';
     Serial.print ("Button "); Serial.print(buttnum);
@@ -219,9 +196,28 @@ void loop(void)
       digitalWrite(9, LOW);
       digitalWrite(10, LOW);    // turn the LED off by making the voltage LOW
       digitalWrite(12, LOW);
-      delay(500);                       // wait for a second
+      delay(500);      
+      digitalWrite(6, HIGH);
+      digitalWrite(9, HIGH);
+      digitalWrite(10, HIGH);   // turn the LED on (HIGH is the voltage level)
+      digitalWrite(12, HIGH);
+      delay(1000);                       // wait for a second
+      digitalWrite(6, LOW);
+      digitalWrite(9, LOW);
+      digitalWrite(10, LOW);    // turn the LED off by making the voltage LOW
+      digitalWrite(12, LOW);
+      delay(500);  // wait for a second
     } else if (buttnum == 2) { //left 90 degrees
-
+      digitalWrite(6, HIGH);
+      digitalWrite(9, HIGH);
+      digitalWrite(10, HIGH);   // turn the LED on (HIGH is the voltage level)
+      digitalWrite(12, HIGH);
+      delay(3000);                       // wait for a second
+      digitalWrite(6, LOW);
+      digitalWrite(9, LOW);
+      digitalWrite(10, LOW);    // turn the LED off by making the voltage LOW
+      digitalWrite(12, LOW);
+      delay(1000);      
     } else if (buttnum == 3) { //left 45 degrees
       
     } else if (buttnum == 4) { //right 45 degrees
@@ -238,69 +234,4 @@ void loop(void)
       Serial.println(" released");
     }
   }
-
-  // GPS Location
-  if (packetbuffer[1] == 'L') {
-    float lat, lon, alt;
-    lat = parsefloat(packetbuffer+2);
-    lon = parsefloat(packetbuffer+6);
-    alt = parsefloat(packetbuffer+10);
-    Serial.print("GPS Location\t");
-    Serial.print("Lat: "); Serial.print(lat, 4); // 4 digits of precision!
-    Serial.print('\t');
-    Serial.print("Lon: "); Serial.print(lon, 4); // 4 digits of precision!
-    Serial.print('\t');
-    Serial.print(alt, 4); Serial.println(" meters");
-  }
-
-  // Accelerometer
-  if (packetbuffer[1] == 'A') {
-    float x, y, z;
-    x = parsefloat(packetbuffer+2);
-    y = parsefloat(packetbuffer+6);
-    z = parsefloat(packetbuffer+10);
-    Serial.print("Accel\t");
-    Serial.print(x); Serial.print('\t');
-    Serial.print(y); Serial.print('\t');
-    Serial.print(z); Serial.println();
-  }
-
-  // Magnetometer
-  if (packetbuffer[1] == 'M') {
-    float x, y, z;
-    x = parsefloat(packetbuffer+2);
-    y = parsefloat(packetbuffer+6);
-    z = parsefloat(packetbuffer+10);
-    Serial.print("Mag\t");
-    Serial.print(x); Serial.print('\t');
-    Serial.print(y); Serial.print('\t');
-    Serial.print(z); Serial.println();
-  }
-
-  // Gyroscope
-  if (packetbuffer[1] == 'G') {
-    float x, y, z;
-    x = parsefloat(packetbuffer+2);
-    y = parsefloat(packetbuffer+6);
-    z = parsefloat(packetbuffer+10);
-    Serial.print("Gyro\t");
-    Serial.print(x); Serial.print('\t');
-    Serial.print(y); Serial.print('\t');
-    Serial.print(z); Serial.println();
-  }
-
-  // Quaternions
-  if (packetbuffer[1] == 'Q') {
-    float x, y, z, w;
-    x = parsefloat(packetbuffer+2);
-    y = parsefloat(packetbuffer+6);
-    z = parsefloat(packetbuffer+10);
-    w = parsefloat(packetbuffer+14);
-    Serial.print("Quat\t");
-    Serial.print(x); Serial.print('\t');
-    Serial.print(y); Serial.print('\t');
-    Serial.print(z); Serial.print('\t');
-    Serial.print(w); Serial.println();
-  }
 }
-

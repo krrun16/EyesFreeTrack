@@ -210,6 +210,10 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     @Override
                     public void onClick(View v) {
                         ((DeviceListFragment.DeviceActionListener) getActivity()).disconnect();
+                        rightGatt.disconnect();
+                        leftGatt.disconnect();
+                        rightGatt = null;
+                        leftGatt = null;
 //                        Intent intent = new Intent(getActivity(), SubjectCamera.class);
 ////                        intent.putExtra("hostaddress", info.groupOwnerAddress.getHostAddress());
 //                        getActivity().startActivityForResult(intent, 1);
@@ -441,27 +445,33 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     break;
 
                 case "haptic_left_90":
+                    sendBluetoothMessage("left","!B21");
+                    sendBluetoothMessage("left","!B20");
+                    break;
+
+                case "haptic_left_45":
                     sendBluetoothMessage("left","!B11");
                     sendBluetoothMessage("left","!B10");
                     break;
 
-                case "haptic_left_45":
-                    break;
-
                 case "haptic_left":
-                    //go left if on straight
+                    sendBluetoothMessage("left","!B11");
+                    sendBluetoothMessage("left","!B10");
                     break;
 
                 case "haptic_right_90":
-                    sendBluetoothMessage("right","!B11");
-                    sendBluetoothMessage("right","!B10");
+                    sendBluetoothMessage("right","!B21");
+                    sendBluetoothMessage("right","!B20");
                     break;
 
                 case "haptic_right_45":
+                    sendBluetoothMessage("left","!B11");
+                    sendBluetoothMessage("left","!B10");
                     break;
 
                 case "haptic_right":
-                    //go right if on straight
+                    sendBluetoothMessage("right","!B11");
+                    sendBluetoothMessage("right","!B10");
                     break;
 
                 case "stop":
