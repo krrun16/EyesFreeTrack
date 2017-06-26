@@ -16,7 +16,7 @@
 #include <Arduino.h>
 #include <SPI.h>
 #if not defined (_VARIANT_ARDUINO_DUE_X_) && not defined (_VARIANT_ARDUINO_ZERO_)
-#include <SoftwareSerial.h>
+  #include <SoftwareSerial.h>
 #endif
 
 #include "Adafruit_BLE.h"
@@ -87,7 +87,7 @@ Adafruit_BluefruitLE_UART ble(BLUEFRUIT_HWSERIAL_NAME, BLUEFRUIT_UART_MODE_PIN);
 
 // A small helper
 void error(const __FlashStringHelper*err) {
-  Serial.println(err);
+//  Serial.println(err);
   while (1);
 }
 
@@ -108,26 +108,26 @@ extern uint8_t packetbuffer[];
 /**************************************************************************/
 void setup(void)
 {
-  while (!Serial);  // required for Flora & Micro
-  delay(500);
+//  while (!Serial);  // required for Flora & Micro
+//  delay(500);
 
-  Serial.begin(115200);
-  Serial.println(F("Adafruit Bluefruit App Controller Example"));
-  Serial.println(F("-----------------------------------------"));
+//  Serial.begin(115200);
+//  Serial.println(F("Adafruit Bluefruit App Controller Example"));
+//  Serial.println(F("-----------------------------------------"));
 
   /* Initialise the module */
-  Serial.print(F("Initialising the Bluefruit LE module: "));
+//  Serial.print(F("Initialising the Bluefruit LE module: "));
 
   if ( !ble.begin(VERBOSE_MODE) )
   {
     error(F("Couldn't find Bluefruit, make sure it's in CoMmanD mode & check wiring?"));
   }
-  Serial.println( F("OK!") );
+//  Serial.println( F("OK!") );
 
   if ( FACTORYRESET_ENABLE )
   {
     /* Perform a factory reset to make sure everything is in a known state */
-    Serial.println(F("Performing a factory reset: "));
+//    Serial.println(F("Performing a factory reset: "));
     if ( ! ble.factoryReset() ) {
       error(F("Couldn't factory reset"));
     }
@@ -139,11 +139,11 @@ void setup(void)
 
   //Serial.println("Requesting Bluefruit info:");
   /* Print Bluefruit information */
-  ble.info();
+ // ble.info();
 
-  Serial.println(F("Please use Adafruit Bluefruit LE app to connect in Controller mode"));
-  Serial.println(F("Then activate/use the sensors, color picker, game controller, etc!"));
-  Serial.println();
+//  Serial.println(F("Please use Adafruit Bluefruit LE app to connect in Controller mode"));
+//  Serial.println(F("Then activate/use the sensors, color picker, game controller, etc!"));
+//  Serial.println();
 
   ble.verbose(false);  // debug info is a little annoying after this point!
 
@@ -158,12 +158,12 @@ void setup(void)
   if ( ble.isVersionAtLeast(MINIMUM_FIRMWARE_VERSION) )
   {
     // Change Mode LED Activity
-    Serial.println(F("Change LED activity to " MODE_LED_BEHAVIOUR));
+//    Serial.println(F("Change LED activity to " MODE_LED_BEHAVIOUR));
     ble.sendCommandCheckOK("AT+HWModeLED=" MODE_LED_BEHAVIOUR);
   }
 
   // Set Bluefruit to DATA mode
-  Serial.println( F("Switching to DATA mode!") );
+//  Serial.println( F("Switching to DATA mode!") );
   ble.setMode(BLUEFRUIT_MODE_DATA);
 
   //Serial.println(F("******************************"));
@@ -185,16 +185,32 @@ void loop(void)
   //  uint8_t len = readPacket(&ble, BLE_READPACKET_TIMEOUT);
   uint8_t len = readPacket(&ble, 100);
   if (len == 0) return;
-  Serial.print("start");
-  printInput();
-  Serial.println(char(packetbuffer[1]));
-  
+//  Serial.print("start");
+//  printInput();
+//  Serial.println(char(packetbuffer[1]));
+//  Serial.println(bool(packetbuffer[3] - '0'));
+
   if (packetbuffer[1] == 'G') return;
   // Buttons
+  if (packetbuffer[1] == 'L') {
+    boolean pressed = packetbuffer[3] - '0';
+    if (pressed == true) {
+      digitalWrite(6, HIGH);
+      digitalWrite(9, HIGH);
+      digitalWrite(10, HIGH);   // turn the LED on (HIGH is the voltage level)
+      digitalWrite(12, HIGH);
+    } else {
+      digitalWrite(6, LOW);
+      digitalWrite(9, LOW);
+      digitalWrite(10, LOW);   // turn the LED on (HIGH is the voltage level)
+      digitalWrite(12, LOW);
+    }
+    return;
+  }
   if (packetbuffer[1] == 'B') {
     uint8_t buttnum = packetbuffer[2] - '0';
     boolean pressed = packetbuffer[3] - '0';
-    Serial.print ("Button "); Serial.print(buttnum);Serial.print('\n');
+//    Serial.print ("Button "); Serial.print(buttnum); Serial.print('\n');
     float timer = 0;
     float count = 0;
     if (buttnum == 1) { //start
@@ -215,15 +231,15 @@ void loop(void)
       count = 0;
     }
     while (true) {
-//      Serial.print ("Timer "); Serial.print(timer);
-//      Serial.print ("Count "); Serial.print(count);
-//      Serial.print ('\n');
+      //      Serial.print ("Timer "); Serial.print(timer);
+      //      Serial.print ("Count "); Serial.print(count);
+      //      Serial.print ('\n');
       len = readPacket(&ble, 100);
       if (len != 0) {
-        Serial.print("here");
-        printInput();
+//        Serial.print("here");
+//        printInput();
         if (packetbuffer[1] == 'G') {
-          Serial.print("break");
+//          Serial.print("break");
           break;
         }
       }
@@ -253,18 +269,18 @@ void loop(void)
   }
 }
 
-void printInput(){
-  Serial.print("Input ");
-  if(packetbuffer[1]=='B'){
-    Serial.print("B ");
-  }else if(packetbuffer[1]=='G'){
-    Serial.print("G ");
-  }else{
-    Serial.print("X");
-  }
-  uint8_t buttnum = packetbuffer[2] - '0';
-  Serial.print(buttnum);
-  Serial.print('\n'); 
-
-}
+//void printInput() {
+//  Serial.print("Input ");
+//  if (packetbuffer[1] == 'B') {
+//    Serial.print("B ");
+//  } else if (packetbuffer[1] == 'G') {
+//    Serial.print("G ");
+//  } else {
+//    Serial.print("X");
+//  }
+//  uint8_t buttnum = packetbuffer[2] - '0';
+//  Serial.print(buttnum);
+//  Serial.print('\n');
+//
+//}
 

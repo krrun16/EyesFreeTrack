@@ -58,7 +58,7 @@ public class Haptic extends AppCompatActivity implements OnClickListener{
                 if(curved) {
                     sendTextMessage("haptic_left_90");
                 }else{
-                    sendTextMessage("haptic_left");
+                    sendTextMessage("haptic_left_off");
                 }
                 break;
 
@@ -66,7 +66,7 @@ public class Haptic extends AppCompatActivity implements OnClickListener{
                 if(curved) {
                     sendTextMessage("haptic_left_45");
                 }else{
-                    sendTextMessage("haptic_left");
+                    sendTextMessage("haptic_left_on");
                 }
                 break;
 
@@ -78,7 +78,7 @@ public class Haptic extends AppCompatActivity implements OnClickListener{
                 if(curved) {
                     sendTextMessage("haptic_right_45");
                 }else{
-                    sendTextMessage("haptic_right");
+                    sendTextMessage("haptic_right_on");
                 }
                 break;
 
@@ -86,7 +86,7 @@ public class Haptic extends AppCompatActivity implements OnClickListener{
                 if(curved) {
                     sendTextMessage("haptic_right_90");
                 }else{
-                    sendTextMessage("haptic_right");
+                    sendTextMessage("haptic_right_off");
                 }
                 break;
 

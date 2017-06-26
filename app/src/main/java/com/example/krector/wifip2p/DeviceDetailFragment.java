@@ -211,10 +211,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     @Override
                     public void onClick(View v) {
                         ((DeviceListFragment.DeviceActionListener) getActivity()).disconnect();
-                        rightGatt.disconnect();
-                        leftGatt.disconnect();
-                        rightGatt = null;
-                        leftGatt = null;
+                        disconnectBluetooth();
 //                        Intent intent = new Intent(getActivity(), SubjectCamera.class);
 ////                        intent.putExtra("hostaddress", info.groupOwnerAddress.getHostAddress());
 //                        getActivity().startActivityForResult(intent, 1);
@@ -368,6 +365,11 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         }
 
         protected void playMedia(int track) {
+            if(mp!=null){
+                mp.stop();
+                mp.release();
+                mp = null;
+            }
             mp = MediaPlayer.create(context, track);
             mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
@@ -468,15 +470,12 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     //                    sendBluetoothMessage("left","!B10");
                     break;
 
-                case "haptic_left":
-                    sendBluetoothMessage("left","!G11");
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            sendBluetoothMessage("left","!B11");
-                        }
-                    }, 100);
-                    //                    sendBluetoothMessage("left","!B10");
+                case "haptic_left_on":
+                    sendBluetoothMessage("left","!L11");
+                    break;
+
+                case "haptic_left_off":
+                    sendBluetoothMessage("left","!L10");
                     break;
 
                 case "haptic_right_90":
@@ -501,15 +500,12 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 //                    sendBluetoothMessage("right","!B10");
                     break;
 
-                case "haptic_right":
-                    sendBluetoothMessage("right","!G11");
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            sendBluetoothMessage("right","!B11");
-                        }
-                    }, 100);
-                    //                    sendBluetoothMessage("right","!B10");
+                case "haptic_right_on":
+                    sendBluetoothMessage("right","!L11");
+                    break;
+
+                case "haptic_right_off":
+                    sendBluetoothMessage("right","!L10");
                     break;
 
                 case "stop":
@@ -598,13 +594,23 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         }
         return null;
     }
+    private static void disconnectBluetooth(){
+        if(rightGatt!=null){
+            rightGatt.disconnect();
+            rightGatt.close();
+            rightGatt = null;
+            rightServicesFound = false;
+        }
+        if(leftGatt!=null){
+            leftGatt.disconnect();
+            leftGatt.close();
+            leftGatt = null;
+            leftServicesFound = false;
+        }
+        stopScanning();
+    }
     private static void connectBluetooth() {
-        if(rightGatt!=null)rightGatt.disconnect();
-        if(leftGatt!=null)leftGatt.disconnect();
-        rightGatt = null;
-        leftGatt = null;
-        rightServicesFound = false;
-        leftServicesFound = false;
+        disconnectBluetooth();
         mAdapter = BleUtils.getBluetoothAdapter(baseContext);
         Boolean check = mAdapter.isEnabled();
         if (BleUtils.getBleStatus(baseContext) != BleUtils.STATUS_BLE_ENABLED) {
@@ -662,8 +668,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
             mScanner.stop();
             mScanner = null;
         }
-
-        checkForHaptic();
     }
 
     private static void checkForHaptic(){
@@ -701,8 +705,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
             rightServicesFound = true;
         }
         if(leftServicesFound&&rightServicesFound){
-            TextView text = (TextView)mContentView.findViewById(R.id.status_text);
-            text.setText("Bluetooth Connected");
+//            TextView text = (TextView)mContentView.findViewById(R.id.status_text);
+//            text.setText("Bluetooth Connected");
         }
     }
 
