@@ -367,22 +367,19 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         protected void playMedia(int track, boolean loop) {
             stopMedia();
             mp = MediaPlayer.create(context, track);
-            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
-
-//                    if (mediaPlayer != null) {
-//                        mediaPlayer.stop();
-//                        mediaPlayer.release();
-//                    }
-                }
-            });
+//            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//                @Override
+//                public void onCompletion(MediaPlayer mediaPlayer) {
+//                    stopMedia();
+//                }
+//            });
             mp.setLooping(loop);
             mp.seekTo(0);
             mp.start();
         }
         protected void stopMedia(){
-            if(mp!=null){
+            boolean temp = mp!=null && mp.isPlaying();
+            if(temp){
                 mp.stop();
                 mp.release();
                 mp = null;
@@ -455,16 +452,16 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     break;
 
                 case "heartbeat_right_90":
-                    playMedia(R.raw.h_left_90, false);
+                    playMedia(R.raw.h_right_90, false);
                     break;
 
                 case "heartbeat_right_45":
-                    playMedia(R.raw.h_left_45, false);
+                    playMedia(R.raw.h_right_45, false);
                     break;
 
                 case "heartbeat_right_on":
                     //go right if on straight
-                    playMedia(R.raw.h_left_90, true);
+                    playMedia(R.raw.h_right_90, true);
                     break;
 
                 case "heartbeat_right_off":

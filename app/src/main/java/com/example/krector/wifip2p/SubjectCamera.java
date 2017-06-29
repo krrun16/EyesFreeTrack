@@ -44,7 +44,7 @@ public class SubjectCamera extends AppCompatActivity implements Camera.PreviewCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         cameraActivity = this;
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_subject_camera);
         ActivityCompat.requestPermissions(this, new String[]
                         {Manifest.permission.WRITE_EXTERNAL_STORAGE},
@@ -210,7 +210,7 @@ public class SubjectCamera extends AppCompatActivity implements Camera.PreviewCa
 
         // Step 5: Set the preview output
         mMediaRecorder.setPreviewDisplay(mPreview.getHolder().getSurface());
-        mMediaRecorder.setOrientationHint(90);
+//        mMediaRecorder.setOrientationHint(90);
         // Step 6: Prepare configured MediaRecorder
         SurfaceHolder temp = mPreview.getHolder();
         try {

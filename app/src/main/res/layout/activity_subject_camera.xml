@@ -11,24 +11,4 @@
         android:layout_weight="1"
         />
 
-    <Button
-        android:id="@+id/button19"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="startButtonPressed"
-        android:text="Start"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:id="@+id/heart_straight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="stopButtonPressed"
-        android:text="Stop"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
 </RelativeLayout>
