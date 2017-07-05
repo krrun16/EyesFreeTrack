@@ -144,8 +144,10 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     }
 
     protected static void writeToFile(String text) {
-        if(fileStream == null){
+        if(fileStream == null && text.equals("start")){
             fileStream  = getOutputLogFileStream();
+        }else if(fileStream == null){
+            return;
         }
         try {
             Long tsLong = System.currentTimeMillis() / 1000;
@@ -212,6 +214,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     public void onClick(View v) {
                         ((DeviceListFragment.DeviceActionListener) getActivity()).disconnect();
                         disconnectBluetooth();
+
 //                        Intent intent = new Intent(getActivity(), SubjectCamera.class);
 ////                        intent.putExtra("hostaddress", info.groupOwnerAddress.getHostAddress());
 //                        getActivity().startActivityForResult(intent, 1);
@@ -333,7 +336,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
         private TextView statusText;
         private Context context;
-        private MediaPlayer mp;
+        private static MediaPlayer mp;
         private boolean cameraStarted;
         /**
          * @param statusText
@@ -378,9 +381,10 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
             mp.start();
         }
         protected void stopMedia(){
-            boolean temp = mp!=null && mp.isPlaying();
-            if(temp){
-                mp.stop();
+            if(mp!=null) {
+                if (mp.isPlaying()) {
+                    mp.stop();
+                }
                 mp.release();
                 mp = null;
             }
@@ -407,7 +411,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
                 case "voice_left_on":
                     //go left if on straight
-                    playMedia(R.raw.v_left_90, true);
+                    playMedia(R.raw.correct_left, true);
                     break;
 
                 case "voice_left_off":
@@ -425,7 +429,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
                 case "voice_right_on":
                     //go right if on straight
-                    playMedia(R.raw.v_right_90, true);
+                    playMedia(R.raw.correct_right, true);
                     break;
 
                 case "voice_right_off":
