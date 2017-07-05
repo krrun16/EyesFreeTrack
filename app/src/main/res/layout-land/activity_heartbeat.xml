@@ -9,142 +9,108 @@
     tools:layout_editor_absoluteY="73dp"
     tools:layout_editor_absoluteX="0dp">
 
-    <!--<Button
-        android:id="@+id/heartbeat4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="4"
-        tools:layout_editor_absoluteY="79dp"
-        tools:layout_editor_absoluteX="193dp"
-        android:layout_above="@+id/heartbeat3"
-        android:layout_alignLeft="@+id/heartbeat3"
-        android:layout_alignStart="@+id/heartbeat3"
-        android:layout_marginLeft="36dp"
-        android:layout_marginStart="36dp" />-->
-
-    <!--<Button
-        android:id="@+id/heartbeat2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="2"
-        tools:layout_editor_absoluteY="175dp"
-        tools:layout_editor_absoluteX="105dp"
-        android:layout_below="@+id/heartbeat3"
-        android:layout_toLeftOf="@+id/heartbeat5"
-        android:layout_toStartOf="@+id/heartbeat5"
-        android:layout_marginRight="28dp"
-        android:layout_marginEnd="28dp" />-->
-
-    <!--<Button
-        android:id="@+id/heartbeat6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="6"
-        android:layout_below="@+id/heartbeat5"
-        android:layout_toRightOf="@+id/heartbeat4"
-        android:layout_toEndOf="@+id/heartbeat4"
-        android:layout_marginLeft="20dp"
-        android:layout_marginStart="20dp" />-->
-
-    <!--<Button
-        android:id="@+id/heartbeat8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="8"
-        tools:layout_editor_absoluteY="175dp"
-        tools:layout_editor_absoluteX="392dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginStart="40dp"
-        android:layout_below="@+id/heartbeat7"
-        android:layout_alignLeft="@+id/heartbeat7"
-        android:layout_alignStart="@+id/heartbeat7" />-->
-
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/heartbeat_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Heartbeats"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        android:layout_marginEnd="8dp"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="263dp" />
+        android:layout_marginTop="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textSize="24sp"
+        />
 
     <Button
         android:id="@+id/heartbeatstart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="start"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
+        android:text="Start Recording"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="@+id/heartbeat_left_45"
-        tools:layout_constraintLeft_creator="1"
-        android:layout_marginBottom="28dp"
-        app:layout_constraintLeft_toLeftOf="@+id/heartbeat_left_45" />
+        android:layout_marginBottom="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="120dp"        />
 
     <Button
         android:id="@+id/heartbeat_left_90"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:layout_marginLeft="57dp"
-        android:layout_marginStart="57dp"
-        android:text="90°"
+        android:text="Turn 90° To Your Left"
         app:layout_constraintBottom_toTopOf="@+id/heartbeatstart"
+        android:layout_marginBottom="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintLeft_creator="1" />
+        android:layout_marginLeft="50dp"
+        android:layout_marginStart="50dp" />
 
     <Button
         android:id="@+id/heartbeat_right_90"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:layout_marginEnd="51dp"
-        android:layout_marginRight="51dp"
-        android:text="90°"
+        android:text="Turn 90° To Your Right"
         app:layout_constraintBottom_toTopOf="@+id/heartbeatstop"
+        android:layout_marginBottom="20dp"
         app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintRight_creator="1" />
+        android:layout_marginRight="50dp"
+        android:layout_marginEnd="50dp"  />
 
     <Button
         android:id="@+id/heartbeat_right_45"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="63dp"
-        android:layout_marginRight="63dp"
-        android:text="45°"
+        android:text="Turn 45° To Your Right"
         app:layout_constraintBottom_toTopOf="@+id/heartbeat_right_90"
-        app:layout_constraintRight_toRightOf="@+id/heartbeat_right_90"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.879"
-        tools:layout_constraintRight_creator="1" />
+        android:layout_marginBottom="20dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="50dp"
+        android:layout_marginEnd="50dp" />
 
     <Button
         android:id="@+id/heartbeat_left_45"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="59dp"
-        android:layout_marginStart="59dp"
-        android:text="45°"
+        android:text="Turn 45° To Your Left"
         app:layout_constraintBottom_toTopOf="@+id/heartbeat_left_90"
-        app:layout_constraintLeft_toLeftOf="@+id/heartbeat_left_90"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.879"
-        tools:layout_constraintLeft_creator="1" />
+        android:layout_marginBottom="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="50dp"
+        android:layout_marginStart="50dp" />
 
     <Button
         android:id="@+id/heartbeatstop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stop"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
+        android:text="Stop Recording"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginEnd="72dp"
-        app:layout_constraintRight_toRightOf="@+id/heartbeat_right_90"
-        android:layout_marginBottom="28dp"
-        android:layout_marginRight="72dp" />
+        android:layout_marginBottom="20dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="120dp"
+        />
+
+    <TextView
+        android:id="@+id/right_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Veering Left"
+        app:layout_constraintBottom_toTopOf="@+id/heartbeat_right_45"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="50dp"
+        android:layout_marginEnd="50dp"
+        android:textSize="24sp"
+        android:textColor="@color/colorAccent"
+        />
+
+    <TextView
+        android:id="@+id/left_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Veering Right"
+        app:layout_constraintBottom_toTopOf="@+id/heartbeat_left_45"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="50dp"
+        android:layout_marginStart="50dp"
+        android:textSize="24sp"
+        android:textColor="@color/colorAccent"
+        />
 </android.support.constraint.ConstraintLayout>

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class Heartbeat extends AppCompatActivity implements OnClickListener {
 
@@ -30,15 +31,15 @@ public class Heartbeat extends AppCompatActivity implements OnClickListener {
         Button heartbeatstartbutton = (Button) findViewById(R.id.heartbeatstart);
 
         if(curved){
-            left90Button.setText("90°");
-            left45Button.setText("45°");
-            right90Button.setText("90°");
-            right45Button.setText("45°");
+            left90Button.setText("Turn 90° To Your Left");
+            left45Button.setText("Turn 45° To Your Left");
+            right90Button.setText("Turn 90° To Your Right");
+            right45Button.setText("Turn 45° To Your Right");
         }else{
-            left90Button.setText("OFF");
-            left45Button.setText("ON");
-            right45Button.setText("ON");
-            right90Button.setText("OFF");
+            left90Button.setText("Turn Off Left Heartbeat");
+            left45Button.setText("Correct To The Left");
+            right45Button.setText("Correct To The Right");
+            right90Button.setText("Turn Off Left Heartbeat");
         }
 
         left90Button.setOnClickListener(this);

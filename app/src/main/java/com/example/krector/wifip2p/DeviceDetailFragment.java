@@ -410,12 +410,10 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     break;
 
                 case "voice_left_on":
-                    //go left if on straight
                     playMedia(R.raw.correct_left, true);
                     break;
 
                 case "voice_left_off":
-                    //go left if on straight
                     stopMedia();
                     break;
 
@@ -428,12 +426,10 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     break;
 
                 case "voice_right_on":
-                    //go right if on straight
                     playMedia(R.raw.correct_right, true);
                     break;
 
                 case "voice_right_off":
-                    //go right if on straight
                     stopMedia();
                     break;
 
@@ -446,12 +442,10 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     break;
 
                 case "heartbeat_left_on":
-                    //go left if on straight
                     playMedia(R.raw.h_left_90, true);
                     break;
 
                 case "heartbeat_left_off":
-                    //go left if on straight
                     stopMedia();
                     break;
 
@@ -464,12 +458,10 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     break;
 
                 case "heartbeat_right_on":
-                    //go right if on straight
                     playMedia(R.raw.h_right_90, true);
                     break;
 
                 case "heartbeat_right_off":
-                    //go right if on straight
                     stopMedia();
                     break;
 
@@ -478,17 +470,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     break;
 
                 case "haptic_left_90":
-                    sendBluetoothMessage("left","!G21");
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            sendBluetoothMessage("left","!B21");
-                        }
-                    }, 100);
-//                    sendBluetoothMessage("left","!B20");
-                    break;
-
-                case "haptic_left_45":
                     sendBluetoothMessage("left","!G11");
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -496,7 +477,18 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                             sendBluetoothMessage("left","!B11");
                         }
                     }, 100);
-                    //                    sendBluetoothMessage("left","!B10");
+
+                    break;
+
+                case "haptic_left_45":
+                    sendBluetoothMessage("left","!G21");
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendBluetoothMessage("left","!B21");
+                        }
+                    }, 100);
+
                     break;
 
                 case "haptic_left_on":
@@ -508,21 +500,21 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     break;
 
                 case "haptic_right_90":
-                    sendBluetoothMessage("right","!G21");
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            sendBluetoothMessage("right","!B21");
-                        }
-                    }, 100);
-                    break;
-
-                case "haptic_right_45":
                     sendBluetoothMessage("right","!G11");
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             sendBluetoothMessage("right","!B11");
+                        }
+                    }, 100);
+                    break;
+
+                case "haptic_right_45":
+                    sendBluetoothMessage("right","!G21");
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendBluetoothMessage("right","!B21");
                         }
                     }, 100);
                     break;
