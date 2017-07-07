@@ -39,7 +39,7 @@ public class Heartbeat extends AppCompatActivity implements OnClickListener {
             left90Button.setText("Turn Off Left Heartbeat");
             left45Button.setText("Correct To The Left");
             right45Button.setText("Correct To The Right");
-            right90Button.setText("Turn Off Left Heartbeat");
+            right90Button.setText("Turn Off Right Heartbeat");
         }
 
         left90Button.setOnClickListener(this);

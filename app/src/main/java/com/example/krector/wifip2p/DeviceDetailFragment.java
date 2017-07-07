@@ -691,7 +691,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
     private static void checkForHaptic(){
         Log.e("EyesFreeTrack","Just need to pause");
-        if(rightGatt!=null){
+        if(rightGatt!=null && leftGatt!=null){
 //            sendBluetoothMessage("test","test");
             return;
         }

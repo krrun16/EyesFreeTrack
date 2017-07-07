@@ -36,8 +36,8 @@ public class Haptic extends AppCompatActivity implements OnClickListener{
             right45Button.setText("Turn 45° To Your Right");
         }else{
             left90Button.setText("Turn Off Left Haptics");
-            left45Button.setText("Correct To The Left");
-            right45Button.setText("Correct To The Right");
+            left45Button.setText("Correct To The Right");
+            right45Button.setText("Correct To The Left");
             right90Button.setText("Turn Off Right Haptics");
         }
 
