@@ -24,12 +24,10 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
@@ -44,11 +42,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,9 +57,18 @@ import com.example.krector.UartInterfaceActivity;
 import com.example.krector.ble.BleDevicesScanner;
 import com.example.krector.ble.BleManager;
 import com.example.krector.ble.BleUtils;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.CapabilityApi;
+import com.google.android.gms.wearable.CapabilityInfo;
+import com.google.android.gms.wearable.MessageApi.SendMessageResult;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.Wearable;
 
 import org.apache.commons.io.IOUtils;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -73,10 +80,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -84,7 +91,7 @@ import java.util.UUID;
  * A fragment that manages a particular peer and allows interaction with device
  * i.e. setting up network connection and transferring data.
  */
-public class DeviceDetailFragment extends Fragment implements ConnectionInfoListener, BleManager.BleManagerListener, BleUtils.ResetBluetoothAdapterListener{
+public class DeviceDetailFragment extends Fragment implements ConnectionInfoListener, GoogleApiClient.OnConnectionFailedListener, BleManager.BleManagerListener, BleUtils.ResetBluetoothAdapterListener{
 
     public static final UUID UUID_TX = UUID.fromString("6e400002-b5a3-f393-e0a9-e50e24dcca9e");
     public static final UUID UUID_SERVICE = UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e");
@@ -114,18 +121,21 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     private static ArrayList<BluetoothDeviceData> mScannedDevices;
 
     static BleManager mBluetoothManager;
+    static final String
+            HAPTIC_CAPABILITY_NAME = "haptic_notice";
+    static String hapticNodeId = null;
+
+    static GoogleApiClient mGoogleApiClient;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        final boolean wasBluetoothEnabled = manageBluetoothAvailability();
-        final boolean areLocationServicesReadyForScanning = manageLocationServiceAvailabilityForScanning();
-
-        // Reset bluetooth
-        if (wasBluetoothEnabled && areLocationServicesReadyForScanning) {
-            BleUtils.resetBluetoothAdapter(baseContext, aListener);
-        }
+        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+                .enableAutoManage((FragmentActivity)getActivity() /* FragmentActivity */,
+                        this /* OnConnectionFailedListener */)
+                .addApi(Wearable.API)
+                .build();
     }
 
     @Override
@@ -466,7 +476,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     break;
 
                 case "ConnectHaptic":
-                    connectBluetooth();
+//                    connectBluetooth();
+                    startHaptic();
                     break;
 
                 case "haptic_left_90":
@@ -481,13 +492,21 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     break;
 
                 case "haptic_left_45":
-                    sendBluetoothMessage("left","!G21");
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            sendBluetoothMessage("left","!B21");
-                        }
-                    }, 100);
+                    String test = "test";
+                    try{
+                        byte[] bytes = test.getBytes("UTF-8");
+                        requestTranscription(bytes);
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+
+//                    sendBluetoothMessage("left","!G21");
+//                    handler.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            sendBluetoothMessage("left","!B21");
+//                        }
+//                    }, 100);
 
                     break;
 
@@ -1017,6 +1036,60 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                 }
             }
         }
+    }
+
+    static void startHaptic(){
+        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(
+                new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+                    @Override
+                    public void onResult(NodeApi.GetConnectedNodesResult result) {
+                        // Use result
+                        hapticNodeId = pickBestNodeId(result.getNodes());
+                        String test = "test";
+                        try{
+                            byte[] bytes = test.getBytes("UTF-8");
+                            requestTranscription(bytes);
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        );
+    }
+
+    static String pickBestNodeId(List<Node> nodes) {
+        String bestNodeId = null;
+        // Find a nearby node or pick one arbitrarily
+        for (Node node : nodes) {
+            if (node.isNearby()) {
+                return node.getId();
+            }
+            bestNodeId = node.getId();
+        }
+        return bestNodeId;
+    }
+
+    static void requestTranscription(byte[] hapticMessage) {
+        if (hapticNodeId != null) {
+            Wearable.MessageApi.sendMessage(mGoogleApiClient, hapticNodeId,
+                    "/haptic_message", hapticMessage).setResultCallback(
+                    new ResultCallback() {
+                        @Override
+                        public void onResult(@NonNull Result result) {
+                            if (!result.getStatus().isSuccess()) {
+                                // Failed to send message
+                            }
+                        }
+                    }
+            );
+        } else {
+            // Unable to retrieve node with transcription capability
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.e("sd","Connection Failed");
     }
 }
 
