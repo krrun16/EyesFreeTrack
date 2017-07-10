@@ -69,6 +69,8 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 
@@ -95,6 +97,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     static String hapticNodeIdRight = "fbe39044";
     static String hapticNodeIdLeft = "3aab567d";
     static GoogleApiClient mGoogleApiClient;
+    static Timer timer;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -309,7 +312,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         private TextView statusText;
         private Context context;
         private static MediaPlayer mp;
-        private boolean cameraStarted;
         /**
          * @param statusText
          */
@@ -317,7 +319,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
             this.statusText = (TextView) statusText;
             this.context = context;
             this.mp = mp;
-            this.cameraStarted = false;
         }
 
         @Override
@@ -458,27 +459,51 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     break;
 
                 case "haptic_left_on":
-                    //TODO: figure out looping haptics
-//                    sendBluetoothMessage("left","!L11");
+                    if(timer!=null){
+                        timer.cancel();
+                        timer = null;
+                    }
+                    timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            requestHaptic("one","left");
+                        }
+                    }, 0, 1500);
                     break;
 
                 case "haptic_left_off":
-//                    sendBluetoothMessage("left","!L10");
+                    if(timer!=null){
+                        timer.cancel();
+                        timer = null;
+                    }
                     break;
 
                 case "haptic_right_on":
-//                    sendBluetoothMessage("right","!L11");
+                    if(timer!=null){
+                        timer.cancel();
+                        timer = null;
+                    }
+                    timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            requestHaptic("one","right");
+                        }
+                    }, 0, 1500);
                     break;
 
                 case "haptic_right_off":
-//                    sendBluetoothMessage("right","!L10");
+                    if(timer!=null){
+                        timer.cancel();
+                        timer = null;
+                    }
                     break;
 
                 case "stop":
                     if(SubjectCamera.isRecording) {
                         playMedia(R.raw.stop, false);
                         SubjectCamera.endRecording();
-                        this.cameraStarted = false;
                     }
                     break;
 
@@ -487,7 +512,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                         playMedia(R.raw.start, false);
                         Intent intent = new Intent((Activity) context, SubjectCamera.class);
                         ((Activity) context).startActivityForResult(intent, 1);
-                        this.cameraStarted = true;
                     }
                     break;
             }
