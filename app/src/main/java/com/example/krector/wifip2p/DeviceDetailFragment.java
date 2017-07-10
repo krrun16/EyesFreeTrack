@@ -21,12 +21,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -53,17 +47,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.krector.UartInterfaceActivity;
-import com.example.krector.ble.BleDevicesScanner;
-import com.example.krector.ble.BleManager;
-import com.example.krector.ble.BleUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.CapabilityApi;
-import com.google.android.gms.wearable.CapabilityInfo;
-import com.google.android.gms.wearable.MessageApi.SendMessageResult;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
@@ -82,8 +69,6 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 
@@ -91,17 +76,7 @@ import java.util.UUID;
  * A fragment that manages a particular peer and allows interaction with device
  * i.e. setting up network connection and transferring data.
  */
-public class DeviceDetailFragment extends Fragment implements ConnectionInfoListener, GoogleApiClient.OnConnectionFailedListener, BleManager.BleManagerListener, BleUtils.ResetBluetoothAdapterListener{
-
-    public static final UUID UUID_TX = UUID.fromString("6e400002-b5a3-f393-e0a9-e50e24dcca9e");
-    public static final UUID UUID_SERVICE = UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e");
-    protected static final String leftHaptic = "D0:E9:F6:51:FB:84";
-    protected static final String rightHaptic = "FC:AB:EC:4E:01:29";
-    public static Boolean rightServicesFound = false;
-    public static Boolean leftServicesFound = false;
-    public static BluetoothGatt leftGatt;
-    public static BluetoothGatt rightGatt;
-    public static BluetoothAdapter mAdapter;
+public class DeviceDetailFragment extends Fragment implements ConnectionInfoListener, GoogleApiClient.OnConnectionFailedListener{
 
     protected static final int CHOOSE_FILE_RESULT_CODE = 20;
     private static final int kActivityRequestCode_EnableBluetooth = 19;
@@ -116,15 +91,9 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     protected static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 32;
 
     private static Context baseContext;
-    private static BleUtils.ResetBluetoothAdapterListener aListener;
-    private static BleDevicesScanner mScanner;
-    private static ArrayList<BluetoothDeviceData> mScannedDevices;
 
-    static BleManager mBluetoothManager;
-    static final String
-            HAPTIC_CAPABILITY_NAME = "haptic_notice";
-    static String hapticNodeId = null;
-
+    static String hapticNodeIdRight = "fbe39044";
+    static String hapticNodeIdLeft = "3aab567d";
     static GoogleApiClient mGoogleApiClient;
 
     @Override
@@ -180,10 +149,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        aListener = this;
         baseContext = getActivity().getBaseContext();
-        mBluetoothManager = BleManager.getInstance(baseContext);
-        mBluetoothManager.setBleListener(this);
         mContentView = inflater.inflate(R.layout.device_detail, null);
         mContentView.findViewById(R.id.btn_connect).setOnClickListener(new View.OnClickListener() {
 
@@ -211,9 +177,9 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                 ActivityCompat.requestPermissions(getActivity(), new String[]
                                 {Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         MY_PERMISSION_WRITE_EXTERNAL_STORAGE);
-                ActivityCompat.requestPermissions(getActivity(), new String[]
-                                {Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSION_ACCESS_FINE_LOCATION);
+//                ActivityCompat.requestPermissions(getActivity(), new String[]
+//                                {Manifest.permission.ACCESS_FINE_LOCATION},
+//                        MY_PERMISSION_ACCESS_FINE_LOCATION);
 
             }
         });
@@ -224,11 +190,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     @Override
                     public void onClick(View v) {
                         ((DeviceListFragment.DeviceActionListener) getActivity()).disconnect();
-                        disconnectBluetooth();
-
-//                        Intent intent = new Intent(getActivity(), SubjectCamera.class);
-////                        intent.putExtra("hostaddress", info.groupOwnerAddress.getHostAddress());
-//                        getActivity().startActivityForResult(intent, 1);
                     }
                 });
 
@@ -477,74 +438,40 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     break;
 
                 case "ConnectHaptic":
-//                    connectBluetooth();
                     startHaptic();
                     break;
 
                 case "haptic_left_90":
-                    sendBluetoothMessage("left","!G11");
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            sendBluetoothMessage("left","!B11");
-                        }
-                    }, 100);
-
+                    requestHaptic("two","left");
                     break;
 
                 case "haptic_left_45":
-                    String test = "test";
-                    try{
-                        byte[] bytes = test.getBytes("UTF-8");
-                        requestTranscription(bytes);
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-
-//                    sendBluetoothMessage("left","!G21");
-//                    handler.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            sendBluetoothMessage("left","!B21");
-//                        }
-//                    }, 100);
-
-                    break;
-
-                case "haptic_left_on":
-                    sendBluetoothMessage("left","!L11");
-                    break;
-
-                case "haptic_left_off":
-                    sendBluetoothMessage("left","!L10");
+                    requestHaptic("one","left");
                     break;
 
                 case "haptic_right_90":
-                    sendBluetoothMessage("right","!G11");
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            sendBluetoothMessage("right","!B11");
-                        }
-                    }, 100);
+                    requestHaptic("two","right");
                     break;
 
                 case "haptic_right_45":
-                    sendBluetoothMessage("right","!G21");
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            sendBluetoothMessage("right","!B21");
-                        }
-                    }, 100);
+                    requestHaptic("one","right");
+                    break;
+
+                case "haptic_left_on":
+                    //TODO: figure out looping haptics
+//                    sendBluetoothMessage("left","!L11");
+                    break;
+
+                case "haptic_left_off":
+//                    sendBluetoothMessage("left","!L10");
                     break;
 
                 case "haptic_right_on":
-                    sendBluetoothMessage("right","!L11");
+//                    sendBluetoothMessage("right","!L11");
                     break;
 
                 case "haptic_right_off":
-                    sendBluetoothMessage("right","!L10");
+//                    sendBluetoothMessage("right","!L10");
                     break;
 
                 case "stop":
@@ -633,411 +560,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         }
         return null;
     }
-    private static void disconnectBluetooth(){
-        if(rightGatt!=null){
-            rightGatt.disconnect();
-            rightGatt.close();
-            rightGatt = null;
-            rightServicesFound = false;
-        }
-        if(leftGatt!=null){
-            leftGatt.disconnect();
-            leftGatt.close();
-            leftGatt = null;
-            leftServicesFound = false;
-        }
-        stopScanning();
-    }
-    private static void connectBluetooth() {
-        disconnectBluetooth();
-        mAdapter = BleUtils.getBluetoothAdapter(baseContext);
-        Boolean check = mAdapter.isEnabled();
-        if (BleUtils.getBleStatus(baseContext) != BleUtils.STATUS_BLE_ENABLED) {
-            Log.w("EyesFreeTrack", "startScan: BluetoothAdapter not initialized or unspecified address.");
-        } else {
-            mScanner = new BleDevicesScanner(mAdapter, null, new BluetoothAdapter.LeScanCallback() {
-                @Override
-                public void onLeScan(final BluetoothDevice device, final int rssi, byte[] scanRecord) {
-                    //final String deviceName = device.getName();
-                    //Log.d(TAG, "Discovered device: " + (deviceName != null ? deviceName : "<unknown>"));
-
-                    BluetoothDeviceData previouslyScannedDeviceData = null;
-                    if (mScannedDevices == null)
-                        mScannedDevices = new ArrayList<>();       // Safeguard
-
-                    Boolean newDevice = true;
-                    // Check that the device was not previously found
-                    for (BluetoothDeviceData deviceData : mScannedDevices) {
-                        if (deviceData.device.getAddress().equals(device.getAddress())) {
-                            previouslyScannedDeviceData = deviceData;
-                            newDevice = false;
-                            break;
-                        }
-                    }
-
-                    BluetoothDeviceData deviceData;
-                    if (previouslyScannedDeviceData == null) {
-                        // Add it to the mScannedDevice list
-                        deviceData = new BluetoothDeviceData();
-                        mScannedDevices.add(deviceData);
-                    } else {
-                        deviceData = previouslyScannedDeviceData;
-                    }
-
-                    deviceData.device = device;
-                    deviceData.rssi = rssi;
-                    deviceData.scanRecord = scanRecord;
-                    decodeScanRecords(deviceData);
-
-                    // Update device data
-                    if(newDevice){
-                        checkForHaptic();
-                    }
-                }
-            });
-
-            // Start scanning
-            mScanner.start();
-        }
-    }
-
-    private static void stopScanning() {
-        // Stop scanning
-        if (mScanner != null) {
-            mScanner.stop();
-            mScanner = null;
-        }
-    }
-
-    private static void checkForHaptic(){
-        Log.e("EyesFreeTrack","Just need to pause");
-        if(rightGatt!=null && leftGatt!=null){
-//            sendBluetoothMessage("test","test");
-            return;
-        }
-        if(mScannedDevices.size()>2){
-            Boolean left = false, right = false;
-            for(BluetoothDeviceData device : mScannedDevices){
-                String name = device.device.getAddress();
-                right = right||device.device.getAddress().equals(rightHaptic);
-                left = left||device.device.getAddress().equals(leftHaptic);
-            }
-//            D0:E9:F6:51:FB:84
-//            FC:AB:EC:4E:01:29
-            if(left&&right){
-//                mBluetoothManager.connect(baseContext, leftHaptic);
-//                mBluetoothManager.connect(baseContext, rightHaptic);
-                if(mAdapter!=null){
-                    rightGatt = mBluetoothManager.retrieveGatt(rightHaptic, baseContext, false);
-                    leftGatt = mBluetoothManager.retrieveGatt(leftHaptic, baseContext, false);
-                }
-                stopScanning();
-            }
-        }
-    }
-
-    @Override
-    public void onServicesDiscovered(BluetoothGatt gatt) {
-        if(gatt==leftGatt){
-            leftServicesFound = true;
-        }else if(gatt==rightGatt){
-            rightServicesFound = true;
-        }
-        if(leftServicesFound&&rightServicesFound){
-//            TextView text = (TextView)mContentView.findViewById(R.id.status_text);
-//            text.setText("Bluetooth Connected");
-        }
-    }
-
-    @Override
-    public void onConnecting() {
-
-    }
-
-    @Override
-    public void onConnected() {
-
-    }
-
-    @Override
-    public void onDisconnected() {
-
-    }
-
-    @Override
-    public void onDataAvailable(BluetoothGattDescriptor descriptor) {
-
-    }
-
-    @Override
-    public void onDataAvailable(BluetoothGattCharacteristic characteristic) {
-
-    }
-
-    @Override
-    public void resetBluetoothCompleted() {
-
-    }
-
-    @Override
-    public void onReadRemoteRssi(int rssi) {
-
-    }
-
-    public boolean manageBluetoothAvailability(){
-        boolean isEnabled = true;
-        int permissionCheck = ContextCompat.checkSelfPermission(baseContext,
-                Manifest.permission.BLUETOOTH);
-
-        // Check Bluetooth HW status
-        int errorMessageId = 0;
-        final int bleStatus = BleUtils.getBleStatus(baseContext);
-        switch (bleStatus) {
-            case BleUtils.STATUS_BLE_NOT_AVAILABLE:
-                isEnabled = false;
-                break;
-            case BleUtils.STATUS_BLUETOOTH_NOT_AVAILABLE: {
-                isEnabled = false;      // it was already off
-                break;
-            }
-            case BleUtils.STATUS_BLUETOOTH_DISABLED: {
-                isEnabled = false;      // it was already off
-                // if no enabled, launch settings dialog to enable it (user should always be prompted before automatically enabling bluetooth)
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                this.startActivityForResult(enableBtIntent, kActivityRequestCode_EnableBluetooth);
-                // execution will continue at onActivityResult()
-                break;
-            }
-        }
-        if (errorMessageId != 0) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(baseContext);
-            AlertDialog dialog = builder.setMessage(errorMessageId)
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show();
-        }
-
-        return isEnabled;
-    }
-    private static boolean manageLocationServiceAvailabilityForScanning() {
-
-        boolean areLocationServiceReady = true;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {        // Location services are only needed to be enabled from Android 6.0
-            int locationMode = Settings.Secure.LOCATION_MODE_OFF;
-            try {
-                locationMode = Settings.Secure.getInt(baseContext.getContentResolver(), Settings.Secure.LOCATION_MODE);
-
-            } catch (Settings.SettingNotFoundException e) {
-                e.printStackTrace();
-            }
-            areLocationServiceReady = locationMode != Settings.Secure.LOCATION_MODE_OFF;
-
-            if (!areLocationServiceReady) {
-                //Locations don't work
-            }
-        }
-
-        return areLocationServiceReady;
-    }
-
-    // region Helpers
-    private static class BluetoothDeviceData {
-        BluetoothDevice device;
-        public int rssi;
-        byte[] scanRecord;
-        private String advertisedName;           // Advertised name
-        private String cachedNiceName;
-        private String cachedName;
-
-        // Decoded scan record (update R.array.scan_devicetypes if this list is modified)
-        static final int kType_Unknown = 0;
-        static final int kType_Uart = 1;
-        static final int kType_Beacon = 2;
-        static final int kType_UriBeacon = 3;
-
-        public int type;
-        int txPower;
-        ArrayList<UUID> uuids;
-
-        String getName() {
-            if (cachedName == null) {
-                cachedName = device.getName();
-                if (cachedName == null) {
-                    cachedName = advertisedName;      // Try to get a name (but it seems that if device.getName() is null, this is also null)
-                }
-            }
-
-            return cachedName;
-        }
-
-        String getNiceName() {
-            if (cachedNiceName == null) {
-                cachedNiceName = getName();
-                if (cachedNiceName == null) {
-                    cachedNiceName = device.getAddress();
-                }
-            }
-
-            return cachedNiceName;
-        }
-    }
-    //endregion
-    private static void decodeScanRecords(BluetoothDeviceData deviceData) {
-        // based on http://stackoverflow.com/questions/24003777/read-advertisement-packet-in-android
-        final byte[] scanRecord = deviceData.scanRecord;
-
-        ArrayList<UUID> uuids = new ArrayList<>();
-        byte[] advertisedData = Arrays.copyOf(scanRecord, scanRecord.length);
-        int offset = 0;
-        deviceData.type = BluetoothDeviceData.kType_Unknown;
-
-        // Check if is an iBeacon ( 0x02, 0x0x1, a flag byte, 0x1A, 0xFF, manufacturer (2bytes), 0x02, 0x15)
-        final boolean isBeacon = advertisedData[0] == 0x02 && advertisedData[1] == 0x01 && advertisedData[3] == 0x1A && advertisedData[4] == (byte) 0xFF && advertisedData[7] == 0x02 && advertisedData[8] == 0x15;
-
-        // Check if is an URIBeacon
-        final byte[] kUriBeaconPrefix = {0x03, 0x03, (byte) 0xD8, (byte) 0xFE};
-        final boolean isUriBeacon = Arrays.equals(Arrays.copyOf(scanRecord, kUriBeaconPrefix.length), kUriBeaconPrefix) && advertisedData[5] == 0x16 && advertisedData[6] == kUriBeaconPrefix[2] && advertisedData[7] == kUriBeaconPrefix[3];
-
-        if (isBeacon) {
-            deviceData.type = BluetoothDeviceData.kType_Beacon;
-
-            // Read uuid
-            offset = 9;
-            UUID uuid = BleUtils.getUuidFromByteArrayBigEndian(Arrays.copyOfRange(scanRecord, offset, offset + 16));
-            uuids.add(uuid);
-            offset += 16;
-
-            // Skip major minor
-            offset += 2 * 2;   // major, minor
-
-            // Read txpower
-            final int txPower = advertisedData[offset++];
-            deviceData.txPower = txPower;
-        } else if (isUriBeacon) {
-            deviceData.type = BluetoothDeviceData.kType_UriBeacon;
-
-            // Read txpower
-            final int txPower = advertisedData[9];
-            deviceData.txPower = txPower;
-        } else {
-            // Read standard advertising packet
-            while (offset < advertisedData.length - 2) {
-                // Length
-                int len = advertisedData[offset++];
-                if (len == 0) break;
-
-                // Type
-                int type = advertisedData[offset++];
-                if (type == 0) break;
-
-                // Data
-//            Log.d(TAG, "record -> lenght: " + length + " type:" + type + " data" + data);
-
-                switch (type) {
-                    case 0x02:          // Partial list of 16-bit UUIDs
-                    case 0x03: {        // Complete list of 16-bit UUIDs
-                        while (len > 1) {
-                            int uuid16 = advertisedData[offset++] & 0xFF;
-                            uuid16 |= (advertisedData[offset++] << 8);
-                            len -= 2;
-                            uuids.add(UUID.fromString(String.format("%08x-0000-1000-8000-00805f9b34fb", uuid16)));
-                        }
-                        break;
-                    }
-
-                    case 0x06:          // Partial list of 128-bit UUIDs
-                    case 0x07: {        // Complete list of 128-bit UUIDs
-                        while (len >= 16) {
-                            try {
-                                // Wrap the advertised bits and order them.
-                                UUID uuid = BleUtils.getUuidFromByteArraLittleEndian(Arrays.copyOfRange(advertisedData, offset, offset + 16));
-                                uuids.add(uuid);
-
-                            } catch (IndexOutOfBoundsException e) {
-                                Log.e("EyesFreeTrack", "BlueToothDeviceFilter.parseUUID: " + e.toString());
-                            } finally {
-                                // Move the offset to read the next uuid.
-                                offset += 16;
-                                len -= 16;
-                            }
-                        }
-                        break;
-                    }
-
-                    case 0x09: {
-                        byte[] nameBytes = new byte[len - 1];
-                        for (int i = 0; i < len - 1; i++) {
-                            nameBytes[i] = advertisedData[offset++];
-                        }
-
-                        String name = null;
-                        try {
-                            name = new String(nameBytes, "utf-8");
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
-                        deviceData.advertisedName = name;
-                        break;
-                    }
-
-                    case 0x0A: {        // TX Power
-                        final int txPower = advertisedData[offset++];
-                        deviceData.txPower = txPower;
-                        break;
-                    }
-
-                    default: {
-                        offset += (len - 1);
-                        break;
-                    }
-                }
-            }
-
-            // Check if Uart is contained in the uuids
-            boolean isUart = false;
-            for (UUID uuid : uuids) {
-                if (uuid.toString().equalsIgnoreCase(UartInterfaceActivity.UUID_SERVICE)) {
-                    isUart = true;
-                    break;
-                }
-            }
-            if (isUart) {
-                deviceData.type = BluetoothDeviceData.kType_Uart;
-            }
-        }
-
-        deviceData.uuids = uuids;
-    }
-
-    public static void sendBluetoothMessage(String bandName, String data){
-        //Currently just tests if messages can be sent to the right data
-        ByteBuffer buffer = ByteBuffer.allocate(data.length()).order(java.nio.ByteOrder.LITTLE_ENDIAN);
-        buffer.put(data.getBytes());
-        byte[] data2 = buffer.array();
-        byte checksum = 0;
-        for (byte aData : data2) {
-            checksum += aData;
-        }
-        checksum = (byte) (~checksum);
-        byte dataCrc[] = new byte[data2.length + 1];
-        System.arraycopy(data2, 0, dataCrc, 0, data2.length);
-        dataCrc[data2.length] = checksum;
-        if(bandName.equals("right")){
-            if(rightServicesFound){
-                BluetoothGattService rightService = rightGatt.getService(UUID_SERVICE);
-                for (int i = 0; i < dataCrc.length; i += 20) {
-                    mBluetoothManager.altWriteService(rightGatt, rightService, UUID_TX.toString(), dataCrc);
-                }
-            }
-        }else if(bandName.equals("left")){
-            if(leftServicesFound){
-                BluetoothGattService leftService = leftGatt.getService(UUID_SERVICE);
-                for (int i = 0; i < dataCrc.length; i += 20) {
-                    mBluetoothManager.altWriteService(leftGatt, leftService, UUID_TX.toString(), dataCrc);
-                }
-            }
-        }
-    }
 
     static void startHaptic(){
         Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(
@@ -1045,49 +567,30 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     @Override
                     public void onResult(NodeApi.GetConnectedNodesResult result) {
                         // Use result
-                        hapticNodeId = pickBestNodeId(result.getNodes());
-                        String test = "test";
-                        try{
-                            byte[] bytes = test.getBytes("UTF-8");
-                            requestTranscription(bytes);
-                        }catch(Exception e){
-                            e.printStackTrace();
+                        for (Node node : result.getNodes()) {
+                            if (node.isNearby() && node.getDisplayName().equals("G Watch D8B7")){
+                                hapticNodeIdRight = node.getId();
+                            }else if(node.isNearby() && node.getDisplayName().equals("Moto 360 A09B")){
+                                hapticNodeIdLeft = node.getId();
+                            }
                         }
+                        requestHaptic("one","right");
+                        requestHaptic("one","left");
                     }
                 }
         );
     }
 
-    static String pickBestNodeId(List<Node> nodes) {
-        String bestNodeId = null;
-        // Find a nearby node or pick one arbitrarily
-        for (Node node : nodes) {
-            if (node.isNearby() && node.getDisplayName().equals("G Watch D8B7")) {
-                return node.getId();
+    static void requestHaptic(String hapticMessage, String watch) {
+        try{
+            byte[] bytes = hapticMessage.getBytes("UTF-8");
+            if (hapticNodeIdRight != null && watch.equals("right")) {
+                Wearable.MessageApi.sendMessage(mGoogleApiClient, hapticNodeIdRight,"/haptic_message", bytes);
+            } else if(hapticNodeIdLeft != null && watch.equals("left")){
+                Wearable.MessageApi.sendMessage(mGoogleApiClient, hapticNodeIdLeft,"/haptic_message", bytes);
             }
-            bestNodeId = node.getId();
-        }
-        return bestNodeId;
-    }
-
-    static void requestTranscription(byte[] hapticMessage) {
-        if (hapticNodeId != null) {
-            Wearable.MessageApi.sendMessage(mGoogleApiClient, hapticNodeId,
-                    "/haptic_message", hapticMessage).setResultCallback(
-                    new ResultCallback() {
-                        @Override
-                        public void onResult(@NonNull Result result) {
-                            if (!result.getStatus().isSuccess()) {
-                                // Failed to send message
-                                Log.e("Failed","Failed");
-                            }else{
-                                Log.e("Success","Success");
-                            }
-                        }
-                    }
-            );
-        } else {
-            // Unable to retrieve node with transcription capability
+        }catch(Exception e){
+            e.printStackTrace();
         }
     }
 

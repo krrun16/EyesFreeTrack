@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.wifip2p">
+    package="com.example.krector.wifip2p">
 
     <uses-feature android:name="android.hardware.type.watch" />
     <uses-permission android:name="android.permission.VIBRATE"/>
@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
         <activity
-            android:name="com.example.wifip2p.MainActivity"
+            android:name="com.example.krector.wifip2p.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +25,7 @@
         </activity>
 
         <service
-            android:name="com.example.wifip2p.HapticService"
+            android:name="com.example.krector.wifip2p.HapticService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.VIBRATE">
