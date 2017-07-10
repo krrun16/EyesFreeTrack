@@ -136,6 +136,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                         this /* OnConnectionFailedListener */)
                 .addApi(Wearable.API)
                 .build();
+        mGoogleApiClient.connect();
     }
 
     @Override
@@ -1061,7 +1062,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         String bestNodeId = null;
         // Find a nearby node or pick one arbitrarily
         for (Node node : nodes) {
-            if (node.isNearby()) {
+            if (node.isNearby() && node.getDisplayName().equals("G Watch D8B7")) {
                 return node.getId();
             }
             bestNodeId = node.getId();
@@ -1078,6 +1079,9 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                         public void onResult(@NonNull Result result) {
                             if (!result.getStatus().isSuccess()) {
                                 // Failed to send message
+                                Log.e("Failed","Failed");
+                            }else{
+                                Log.e("Success","Success");
                             }
                         }
                     }

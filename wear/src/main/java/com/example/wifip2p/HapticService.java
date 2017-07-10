@@ -1,9 +1,6 @@
-package com.example.myapplication;
+package com.example.wifip2p;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
-import android.os.VibrationEffect;
+
 import android.os.Vibrator;
 
 import com.google.android.gms.wearable.MessageEvent;
