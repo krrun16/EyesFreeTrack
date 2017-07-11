@@ -18,7 +18,6 @@ package com.example.krector.wifip2p;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -32,11 +31,9 @@ import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -49,7 +46,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
@@ -63,15 +59,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
 
 
 /**
@@ -467,7 +458,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     timer.schedule(new TimerTask() {
                         @Override
                         public void run() {
-                            requestHaptic("one","left");
+                            requestHaptic("one","right");
                         }
                     }, 0, 1500);
                     break;
@@ -488,7 +479,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     timer.schedule(new TimerTask() {
                         @Override
                         public void run() {
-                            requestHaptic("one","right");
+                            requestHaptic("one","left");
                         }
                     }, 0, 1500);
                     break;
