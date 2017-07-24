@@ -103,11 +103,11 @@ public class Haptic extends AppCompatActivity implements OnClickListener{
                 break;
 
             case R.id.hapticstop:
-                sendTextMessage("stop");
+                sendTextMessage("stop_haptic");
                 break;
 
             case R.id.hapticstart:
-                sendTextMessage("start");
+                sendTextMessage("start_haptic");
                 break;
 
         }

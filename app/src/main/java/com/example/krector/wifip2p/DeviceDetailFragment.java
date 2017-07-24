@@ -35,6 +35,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -47,6 +48,7 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
@@ -69,7 +71,7 @@ import java.util.TimerTask;
  * A fragment that manages a particular peer and allows interaction with device
  * i.e. setting up network connection and transferring data.
  */
-public class DeviceDetailFragment extends Fragment implements ConnectionInfoListener, GoogleApiClient.OnConnectionFailedListener{
+public class DeviceDetailFragment extends Fragment implements ConnectionInfoListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     protected static final int CHOOSE_FILE_RESULT_CODE = 20;
     private static final int kActivityRequestCode_EnableBluetooth = 19;
@@ -98,7 +100,10 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                 .enableAutoManage((FragmentActivity)getActivity() /* FragmentActivity */,
                         this /* OnConnectionFailedListener */)
                 .addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .build();
+        mGoogleApiClient.connect();
         mGoogleApiClient.connect();
     }
 
@@ -118,7 +123,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     }
 
     protected static void writeToFile(String text) {
-        if(fileStream == null && text.equals("start")){
+        if(fileStream == null && (text.equals("start") || text.equals("start_haptic"))){
             fileStream  = getOutputLogFileStream();
         }else if(fileStream == null){
             return;
@@ -334,12 +339,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         protected void playMedia(int track, boolean loop) {
             stopMedia();
             mp = MediaPlayer.create(context, track);
-//            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-//                @Override
-//                public void onCompletion(MediaPlayer mediaPlayer) {
-//                    stopMedia();
-//                }
-//            });
             mp.setLooping(loop);
             mp.seekTo(0);
             mp.start();
@@ -505,6 +504,14 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                         ((Activity) context).startActivityForResult(intent, 1);
                     }
                     break;
+
+                case "start_haptic":
+                    playMedia(R.raw.start, false);
+                    break;
+
+                case "stop_haptic":
+                    playMedia(R.raw.stop, false);
+                    break;
             }
             new FileServerAsyncTask(context, statusText, mp).execute();
         }
@@ -612,6 +619,16 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.e("sd","Connection Failed");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
     }
 }
 
