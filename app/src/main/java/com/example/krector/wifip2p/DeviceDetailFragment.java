@@ -135,7 +135,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if(text.equals("stop")){
+        if(text.equals("stop") || text.equals("stop_haptic")){
             try{
                 fileStream.close();
                 fileStream = null;
