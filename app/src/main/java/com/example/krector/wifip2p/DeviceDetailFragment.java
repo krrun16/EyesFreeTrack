@@ -66,6 +66,9 @@ import java.net.Socket;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.example.krector.wifip2p.SubjectCamera.MY_PERMISSIONS_REQUEST_AUDIO;
+import static com.example.krector.wifip2p.SubjectCamera.MY_PERMISSIONS_REQUEST_CAMERA;
+
 
 /**
  * A fragment that manages a particular peer and allows interaction with device
@@ -88,7 +91,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     private static Context baseContext;
 
     static String hapticNodeIdRight = "fbe39044";
-    static String hapticNodeIdLeft = "3aab567d";
+    static String hapticNodeIdLeft = "02254ed1-6b93-476f-9c14-e707a0cb1add";
     static GoogleApiClient mGoogleApiClient;
     static Timer timer;
 
@@ -129,7 +132,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
             return;
         }
         try {
-            Long tsLong = System.currentTimeMillis() / 1000;
+            Long tsLong = System.currentTimeMillis();
             String ts = tsLong.toString();
             fileStream.write((ts+"_"+text+'\n').getBytes());
         } catch (IOException e) {
@@ -150,6 +153,15 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         baseContext = getActivity().getBaseContext();
         mContentView = inflater.inflate(R.layout.device_detail, null);
+        ActivityCompat.requestPermissions(getActivity(), new String[]
+                        {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                MY_PERMISSION_WRITE_EXTERNAL_STORAGE);
+        ActivityCompat.requestPermissions(getActivity(),
+                new String[]{Manifest.permission.CAMERA},
+                MY_PERMISSIONS_REQUEST_CAMERA);
+        ActivityCompat.requestPermissions(getActivity(),
+                new String[]{Manifest.permission.RECORD_AUDIO},
+                MY_PERMISSIONS_REQUEST_AUDIO);
         mContentView.findViewById(R.id.btn_connect).setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -176,6 +188,12 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                 ActivityCompat.requestPermissions(getActivity(), new String[]
                                 {Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         MY_PERMISSION_WRITE_EXTERNAL_STORAGE);
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.CAMERA},
+                        MY_PERMISSIONS_REQUEST_CAMERA);
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.RECORD_AUDIO},
+                        MY_PERMISSIONS_REQUEST_AUDIO);
 //                ActivityCompat.requestPermissions(getActivity(), new String[]
 //                                {Manifest.permission.ACCESS_FINE_LOCATION},
 //                        MY_PERMISSION_ACCESS_FINE_LOCATION);
@@ -359,159 +377,162 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
          */
         @Override
         protected void onPostExecute(String result) {
+            Log.d("string received", ""+System.currentTimeMillis());
             final Handler handler = new Handler();
             statusText.setText("String copied - " + result);
             writeToFile(result);
-            switch(result){
+            if (result != null && result != "null") {
+                switch (result) {
 
-                case "voice_left_90":
-                    playMedia(R.raw.v_left_90, false);
-                    break;
+                    case "voice_left_90":
+                        playMedia(R.raw.v_left_90, false);
+                        break;
 
-                case "voice_left_45":
-                    playMedia(R.raw.v_left_45, false);
-                    break;
+                    case "voice_left_45":
+                        playMedia(R.raw.v_left_45, false);
+                        break;
 
-                case "voice_left_on":
-                    playMedia(R.raw.correct_left, true);
-                    break;
+                    case "voice_left_on":
+                        playMedia(R.raw.correct_left, true);
+                        break;
 
-                case "voice_left_off":
-                    stopMedia();
-                    break;
+                    case "voice_left_off":
+                        stopMedia();
+                        break;
 
-                case "voice_right_90":
-                    playMedia(R.raw.v_right_90, false);
-                    break;
+                    case "voice_right_90":
+                        playMedia(R.raw.v_right_90, false);
+                        break;
 
-                case "voice_right_45":
-                    playMedia(R.raw.v_right_45, false);
-                    break;
+                    case "voice_right_45":
+                        playMedia(R.raw.v_right_45, false);
+                        break;
 
-                case "voice_right_on":
-                    playMedia(R.raw.correct_right, true);
-                    break;
+                    case "voice_right_on":
+                        playMedia(R.raw.correct_right, true);
+                        break;
 
-                case "voice_right_off":
-                    stopMedia();
-                    break;
+                    case "voice_right_off":
+                        stopMedia();
+                        break;
 
-                case "heartbeat_left_90":
-                    playMedia(R.raw.h_left_90, false);
-                    break;
+                    case "heartbeat_left_90":
+                        playMedia(R.raw.h_left_90, false);
+                        break;
 
-                case "heartbeat_left_45":
-                    playMedia(R.raw.h_left_45, false);
-                    break;
+                    case "heartbeat_left_45":
+                        playMedia(R.raw.h_left_45, false);
+                        break;
 
-                case "heartbeat_left_on":
-                    playMedia(R.raw.h_left_90, true);
-                    break;
+                    case "heartbeat_left_on":
+                        playMedia(R.raw.h_left_90, true);
+                        break;
 
-                case "heartbeat_left_off":
-                    stopMedia();
-                    break;
+                    case "heartbeat_left_off":
+                        stopMedia();
+                        break;
 
-                case "heartbeat_right_90":
-                    playMedia(R.raw.h_right_90, false);
-                    break;
+                    case "heartbeat_right_90":
+                        playMedia(R.raw.h_right_90, false);
+                        break;
 
-                case "heartbeat_right_45":
-                    playMedia(R.raw.h_right_45, false);
-                    break;
+                    case "heartbeat_right_45":
+                        playMedia(R.raw.h_right_45, false);
+                        break;
 
-                case "heartbeat_right_on":
-                    playMedia(R.raw.h_right_90, true);
-                    break;
+                    case "heartbeat_right_on":
+                        playMedia(R.raw.h_right_90, true);
+                        break;
 
-                case "heartbeat_right_off":
-                    stopMedia();
-                    break;
+                    case "heartbeat_right_off":
+                        stopMedia();
+                        break;
 
-                case "ConnectHaptic":
-                    startHaptic();
-                    break;
+                    case "ConnectHaptic":
+                        startHaptic();
+                        break;
 
-                case "haptic_left_90":
-                    requestHaptic("two","left");
-                    break;
+                    case "haptic_left_90":
+                        requestHaptic("two", "left");
+                        break;
 
-                case "haptic_left_45":
-                    requestHaptic("one","left");
-                    break;
+                    case "haptic_left_45":
+                        requestHaptic("one", "left");
+                        break;
 
-                case "haptic_right_90":
-                    requestHaptic("two","right");
-                    break;
+                    case "haptic_right_90":
+                        requestHaptic("two", "right");
+                        break;
 
-                case "haptic_right_45":
-                    requestHaptic("one","right");
-                    break;
+                    case "haptic_right_45":
+                        requestHaptic("one", "right");
+                        break;
 
-                case "haptic_left_on":
-                    if(timer!=null){
-                        timer.cancel();
-                        timer = null;
-                    }
-                    timer = new Timer();
-                    timer.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            requestHaptic("one","right");
+                    case "haptic_left_on":
+                        if (timer != null) {
+                            timer.cancel();
+                            timer = null;
                         }
-                    }, 0, 1500);
-                    break;
+                        timer = new Timer();
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                requestHaptic("one", "right");
+                            }
+                        }, 0, 1500);
+                        break;
 
-                case "haptic_left_off":
-                    if(timer!=null){
-                        timer.cancel();
-                        timer = null;
-                    }
-                    break;
-
-                case "haptic_right_on":
-                    if(timer!=null){
-                        timer.cancel();
-                        timer = null;
-                    }
-                    timer = new Timer();
-                    timer.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            requestHaptic("one","left");
+                    case "haptic_left_off":
+                        if (timer != null) {
+                            timer.cancel();
+                            timer = null;
                         }
-                    }, 0, 1500);
-                    break;
+                        break;
 
-                case "haptic_right_off":
-                    if(timer!=null){
-                        timer.cancel();
-                        timer = null;
-                    }
-                    break;
+                    case "haptic_right_on":
+                        if (timer != null) {
+                            timer.cancel();
+                            timer = null;
+                        }
+                        timer = new Timer();
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                requestHaptic("one", "left");
+                            }
+                        }, 0, 1500);
+                        break;
 
-                case "stop":
-                    if(SubjectCamera.isRecording) {
-                        playMedia(R.raw.stop, false);
-                        SubjectCamera.endRecording();
-                    }
-                    break;
+                    case "haptic_right_off":
+                        if (timer != null) {
+                            timer.cancel();
+                            timer = null;
+                        }
+                        break;
 
-                case "start":
-                    if(!SubjectCamera.isRecording) {
+                    case "stop":
+                        if (SubjectCamera.isRecording) {
+                            playMedia(R.raw.stop, false);
+                            SubjectCamera.endRecording();
+                        }
+                        break;
+
+                    case "start":
+                        if (!SubjectCamera.isRecording) {
+                            playMedia(R.raw.start, false);
+                            Intent intent = new Intent((Activity) context, SubjectCamera.class);
+                            ((Activity) context).startActivityForResult(intent, 1);
+                        }
+                        break;
+
+                    case "start_haptic":
                         playMedia(R.raw.start, false);
-                        Intent intent = new Intent((Activity) context, SubjectCamera.class);
-                        ((Activity) context).startActivityForResult(intent, 1);
-                    }
-                    break;
+                        break;
 
-                case "start_haptic":
-                    playMedia(R.raw.start, false);
-                    break;
-
-                case "stop_haptic":
-                    playMedia(R.raw.stop, false);
-                    break;
+                    case "stop_haptic":
+                        playMedia(R.raw.stop, false);
+                        break;
+                }
             }
             new FileServerAsyncTask(context, statusText, mp).execute();
         }
@@ -563,7 +584,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
             }
 
             // Create a media file name
-            Long tsLong = System.currentTimeMillis() / 1000;
+            Long tsLong = System.currentTimeMillis();
             String ts = tsLong.toString();
             File logFile = new File(logStorageDir.getPath() + File.separator +
                     "LOG_" + ts + ".txt");
@@ -590,9 +611,12 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     public void onResult(NodeApi.GetConnectedNodesResult result) {
                         // Use result
                         for (Node node : result.getNodes()) {
-                            if (node.isNearby() && node.getDisplayName().equals("G Watch D8B7")){
+                            if (node.isNearby() && node.getDisplayName().equals("G Watch D8B7")) {
                                 hapticNodeIdRight = node.getId();
-                            }else if(node.isNearby() && node.getDisplayName().equals("Moto 360 A09B")){
+                                //}else if(node.isNearby() && node.getDisplayName().equals("Moto 360 A09B")){
+                                //    hapticNodeIdLeft = node.getId();
+                                //}
+                            } else if(node.isNearby() && node.getDisplayName().equals("G Watch FB61")) {
                                 hapticNodeIdLeft = node.getId();
                             }
                         }
@@ -604,12 +628,15 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     }
 
     static void requestHaptic(String hapticMessage, String watch) {
+        Log.d("requestHaptic method", ""+System.currentTimeMillis());
         try{
             byte[] bytes = hapticMessage.getBytes("UTF-8");
             if (hapticNodeIdRight != null && watch.equals("right")) {
                 Wearable.MessageApi.sendMessage(mGoogleApiClient, hapticNodeIdRight,"/haptic_message", bytes);
+                Log.d("send message 'complete'", ""+System.currentTimeMillis());
             } else if(hapticNodeIdLeft != null && watch.equals("left")){
                 Wearable.MessageApi.sendMessage(mGoogleApiClient, hapticNodeIdLeft,"/haptic_message", bytes);
+                Log.d("send message 'complete'", ""+System.currentTimeMillis());
             }
         }catch(Exception e){
             e.printStackTrace();

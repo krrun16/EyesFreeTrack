@@ -2,6 +2,8 @@ package com.example.krector.wifip2p;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -48,6 +50,13 @@ public class Voice extends AppCompatActivity implements OnClickListener {
         stopButton.setOnClickListener(this);
         voicestartbutton.setOnClickListener(this);
 
+        left90Button.setBackgroundColor(Color.DKGRAY);
+        left45Button.setBackgroundColor(Color.DKGRAY);
+        right45Button.setBackgroundColor(Color.DKGRAY);
+        right90Button.setBackgroundColor(Color.DKGRAY);
+        stopButton.setBackgroundColor(Color.DKGRAY);
+        voicestartbutton.setBackgroundColor(Color.DKGRAY);
+
     }
 
     public void sendTextMessage(String message) {
@@ -63,6 +72,14 @@ public class Voice extends AppCompatActivity implements OnClickListener {
 
     @Override
     public void onClick(View v) {
+
+        Button button = (Button) findViewById(v.getId());
+        ColorDrawable buttonColor = (ColorDrawable) button.getBackground();
+        if(buttonColor.getColor() == Color.DKGRAY) {
+            button.setBackgroundColor(Color.YELLOW);
+        } else {
+            button.setBackgroundColor(Color.DKGRAY);
+        }
 
         switch(v.getId()){
 

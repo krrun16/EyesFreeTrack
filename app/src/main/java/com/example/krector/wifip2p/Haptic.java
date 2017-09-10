@@ -1,5 +1,8 @@
 package com.example.krector.wifip2p;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.content.Intent;
@@ -8,16 +11,26 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+
+import static android.R.attr.button;
+import static android.R.attr.host;
+import static android.R.attr.port;
+
 public class Haptic extends AppCompatActivity implements OnClickListener{
 
     private String hostaddress;
     private Boolean curved;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent myIntent = getIntent();
         hostaddress = myIntent.getStringExtra("hostaddress");
         curved = myIntent.getBooleanExtra("curved",true);
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_haptic);
 
@@ -49,9 +62,18 @@ public class Haptic extends AppCompatActivity implements OnClickListener{
         stopButton.setOnClickListener(this);
         hapticstartbutton.setOnClickListener(this);
 
+        left90Button.setBackgroundColor(Color.DKGRAY);
+        left45Button.setBackgroundColor(Color.DKGRAY);
+        connectButton.setBackgroundColor(Color.DKGRAY);
+        right45Button.setBackgroundColor(Color.DKGRAY);
+        right90Button.setBackgroundColor(Color.DKGRAY);
+        stopButton.setBackgroundColor(Color.DKGRAY);
+        hapticstartbutton.setBackgroundColor(Color.DKGRAY);
+
     }
 
     public void sendTextMessage(String message) {
+        Log.d("sendTextMessage", ""+System.currentTimeMillis());
         Intent serviceIntent = new Intent(this, TextTransferService.class);
         serviceIntent.setAction(TextTransferService.ACTION_SEND_TEXT);
         serviceIntent.putExtra("message", message);
@@ -63,9 +85,16 @@ public class Haptic extends AppCompatActivity implements OnClickListener{
 
     @Override
     public void onClick(View v) {
+        Log.d("onClick", System.currentTimeMillis()+"");
+        Button button = (Button) findViewById(v.getId());
+        ColorDrawable buttonColor = (ColorDrawable) button.getBackground();
+        if(buttonColor.getColor() == Color.DKGRAY) {
+            button.setBackgroundColor(Color.YELLOW);
+        } else {
+            button.setBackgroundColor(Color.DKGRAY);
+        }
 
         switch(v.getId()){
-
             case R.id.haptic_left_90:
                 if(curved) {
                     sendTextMessage("haptic_left_90");

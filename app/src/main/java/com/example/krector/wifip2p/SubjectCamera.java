@@ -49,9 +49,12 @@ public class SubjectCamera extends AppCompatActivity implements Camera.PreviewCa
         ActivityCompat.requestPermissions(this, new String[]
                         {Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 MY_PERMISSION_WRITE_EXTERNAL_STORAGE);
-        ActivityCompat.requestPermissions(SubjectCamera.this,
+        ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.RECORD_AUDIO},
                 MY_PERMISSIONS_REQUEST_AUDIO);
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.CAMERA},
+                MY_PERMISSIONS_REQUEST_CAMERA);
         getCameraPermission();
         mCamera = getCameraInstance();
         mPreview = new CameraPreview(this, mCamera);
@@ -178,7 +181,7 @@ public class SubjectCamera extends AppCompatActivity implements Camera.PreviewCa
         }
 
         // Create a media file name
-        Long tsLong = System.currentTimeMillis() / 1000;
+        Long tsLong = System.currentTimeMillis();
         String ts = tsLong.toString();
         File mediaFile = new File(mediaStorageDir.getPath() + File.separator +
                     "VID_"+ ts + ".mp4");
